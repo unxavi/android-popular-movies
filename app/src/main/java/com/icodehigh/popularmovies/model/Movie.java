@@ -3,6 +3,7 @@ package com.icodehigh.popularmovies.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
 import java.util.List;
 
 public class Movie {
@@ -47,7 +48,7 @@ public class Movie {
     public String overview;
 
     @SerializedName("release_date")
-    public String releaseDate;
+    public Date releaseDate;
 
 
 }
