@@ -80,7 +80,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showInternetError() {
-        showMoviewView();
+        showMoviesView();
         Snackbar.make(
                 rootView,
                 "Check your internet connection and try again",
@@ -90,7 +90,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showServerError() {
-        showMoviewView();
+        showMoviesView();
         Snackbar.make(
                 rootView,
                 "There seems to be an error, try again later",
@@ -100,7 +100,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showEmptyState() {
-        showMoviewView();
+        showMoviesView();
         // TODO: 2/23/18
     }
 
@@ -111,7 +111,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     }
 
     @Override
-    public void showMoviewView() {
+    public void showMoviesView() {
         loadingView.setVisibility(View.GONE);
         moviesRv.setVisibility(View.VISIBLE);
     }
@@ -127,7 +127,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         moviesRv.setHasFixedSize(true);
         MoviesAdapter moviesAdapter = new MoviesAdapter(this, movies, this);
         moviesRv.setAdapter(moviesAdapter);
-        showMoviewView();
+        showMoviesView();
     }
 
     @Override
