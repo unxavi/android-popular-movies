@@ -28,7 +28,7 @@
             android:layout_marginTop="8dp"
             android:contentDescription="@string/internet_error"
             app:lottie_autoPlay="true"
-            app:lottie_fileName="disconnected.json"
+            app:lottie_fileName="no_connection.json"
             app:lottie_loop="true" />
 
         <TextView
