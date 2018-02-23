@@ -33,6 +33,9 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     @BindView(R.id.movies_rv)
     RecyclerView moviesRv;
 
+    @BindView(R.id.loading_view)
+    View loadingView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +80,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showInternetError() {
+        showMoviewView();
         Snackbar.make(
                 rootView,
                 "Check your internet connection and try again",
@@ -86,6 +90,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showServerError() {
+        showMoviewView();
         Snackbar.make(
                 rootView,
                 "There seems to be an error, try again later",
@@ -95,12 +100,20 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showEmptyState() {
+        showMoviewView();
         // TODO: 2/23/18
     }
 
     @Override
     public void showLoading() {
-        // TODO: 2/23/18
+        moviesRv.setVisibility(View.GONE);
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showMoviewView() {
+        loadingView.setVisibility(View.GONE);
+        moviesRv.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -114,7 +127,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         moviesRv.setHasFixedSize(true);
         MoviesAdapter moviesAdapter = new MoviesAdapter(this, movies, this);
         moviesRv.setAdapter(moviesAdapter);
-
+        showMoviewView();
     }
 
     @Override

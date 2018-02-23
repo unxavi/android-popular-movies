@@ -8,14 +8,18 @@
     tools:context="com.icodehigh.popularmovies.features.moviesFeed.MoviesFeedActivity"
     tools:showIn="@layout/activity_movies_feed">
 
+    <include layout="@layout/loading_view" />
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/movies_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_movie">
 
 
     </android.support.v7.widget.RecyclerView>

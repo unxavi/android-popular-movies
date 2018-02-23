@@ -27,6 +27,11 @@ public interface MoviesFeedView extends MvpView {
     void showLoading();
 
     /**
+     * Show the recycler views with the movies and hide the loading view
+     */
+    void showMoviewView();
+
+    /**
      * If the API call returns success but there are not movies this method is called
      */
     void showEmptyState();
