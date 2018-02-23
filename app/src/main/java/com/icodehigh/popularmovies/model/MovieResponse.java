@@ -1,8 +1,9 @@
 package com.icodehigh.popularmovies.model;
 
 
-
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class MovieResponse {
 
@@ -16,7 +17,9 @@ public class MovieResponse {
     private int totalPages;
 
     @SerializedName("results")
-    private Movie results;
+    private List<Movie> results;
 
-
+    public List<Movie> getResults() {
+        return results;
+    }
 }
