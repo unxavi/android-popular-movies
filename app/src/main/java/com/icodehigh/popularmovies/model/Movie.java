@@ -9,46 +9,45 @@ import java.util.List;
 public class Movie {
 
     @SerializedName("vote_count")
-    public int voteCount;
+    private int voteCount;
 
     @SerializedName("id")
-    public int id;
+    private int id;
 
     @SerializedName("video")
-    public boolean video;
+    private boolean video;
 
     @SerializedName("vote_average")
-    public double voteAverage;
+    private double voteAverage;
 
     @SerializedName("title")
-    public String title;
+    private String title;
 
     @SerializedName("popularity")
-    public double popularity;
+    private double popularity;
 
     @SerializedName("poster_path")
-    public String posterPath;
+    private String posterPath;
 
     @SerializedName("original_language")
-    public String originalLanguage;
+    private String originalLanguage;
 
     @SerializedName("original_title")
-    public String originalTitle;
+    private String originalTitle;
 
     @SerializedName("genre_ids")
-    public List<Integer> genreIds = null;
+    private List<Integer> genreIds = null;
 
     @SerializedName("backdrop_path")
-    public String backdropPath;
+    private String backdropPath;
 
     @SerializedName("adult")
-    public boolean adult;
+    private boolean adult;
 
     @SerializedName("overview")
-    public String overview;
+    private String overview;
 
     @SerializedName("release_date")
-    public Date releaseDate;
-
+    private Date releaseDate;
 
 }
