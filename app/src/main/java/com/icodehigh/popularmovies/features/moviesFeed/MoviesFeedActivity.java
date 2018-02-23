@@ -36,6 +36,9 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     @BindView(R.id.loading_view)
     View loadingView;
 
+    @BindView(R.id.no_connection_view)
+    View noConnectionView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,12 +83,9 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showInternetError() {
-        showMoviesView();
-        Snackbar.make(
-                rootView,
-                "Check your internet connection and try again",
-                Snackbar.LENGTH_LONG)
-                .show();
+        moviesRv.setVisibility(View.GONE);
+        loadingView.setVisibility(View.GONE);
+        noConnectionView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -100,19 +100,21 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showEmptyState() {
-        showMoviesView();
+        this.showMoviesView();
         // TODO: 2/23/18
     }
 
     @Override
     public void showLoading() {
         moviesRv.setVisibility(View.GONE);
+        noConnectionView.setVisibility(View.GONE);
         loadingView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showMoviesView() {
         loadingView.setVisibility(View.GONE);
+        noConnectionView.setVisibility(View.GONE);
         moviesRv.setVisibility(View.VISIBLE);
     }
 

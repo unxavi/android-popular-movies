@@ -10,6 +10,7 @@
 
     <include layout="@layout/loading_view" />
 
+    <include layout="@layout/no_connection_view" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/movies_rv"
@@ -19,10 +20,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_movie">
-
-
-    </android.support.v7.widget.RecyclerView>
-
+        tools:listitem="@layout/item_movie" />
 
 </android.support.constraint.ConstraintLayout>
