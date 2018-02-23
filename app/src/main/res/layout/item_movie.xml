@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/moview_iv"
+    android:id="@+id/movies_iv"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scaleType="centerCrop" />
+    android:layout_height="wrap_content"
+    android:adjustViewBounds="true"
+    android:scaleType="centerCrop"
+    android:contentDescription="@string/movie_poster_content_description" />
