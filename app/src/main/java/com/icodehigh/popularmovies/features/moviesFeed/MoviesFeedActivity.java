@@ -1,17 +1,21 @@
 package com.icodehigh.popularmovies.features.moviesFeed;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.icodehigh.popularmovies.R;
+import com.icodehigh.popularmovies.model.Movie;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MoviesFeedActivity extends AppCompatActivity {
+public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPresenter> implements MoviesFeedView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -43,7 +47,27 @@ public class MoviesFeedActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @NonNull
+    @Override
+    public MoviesFeedPresenter createPresenter() {
+        return new MoviesFeedPresenter();
+    }
+
+    @Override
+    public void showInternetError() {
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void showMovieData(List<Movie> movies) {
+
     }
 }
