@@ -32,7 +32,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
                 view.showLoading();
             }
         });
-        // Create the ApiService object and enque the call
+        // Create the ApiService object and enqueue the call
         ApiService service = ServiceGenerator.createService(ApiService.class);
         Call<MovieResponse> popularMoviesCall =
                 service.getPopularMovies(BuildConfig.API_KEY_MOVIES);
