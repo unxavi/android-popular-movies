@@ -54,6 +54,10 @@ public class Movie {
     @SerializedName("release_date")
     private Date releaseDate;
 
+    public int getId() {
+        return id;
+    }
+
     public String getCompletePosterPath() {
         if (TextUtils.isEmpty(posterPath)) {
             return null;
