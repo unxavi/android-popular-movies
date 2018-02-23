@@ -10,12 +10,22 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
+        applicationVariants.all { variant ->
+            variant.buildConfigField "String", "API_KEY_MOVIES", "\"" + getApiKeyMovies() + "\""
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+static def getApiKeyMovies(){
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secrets.properties')))
+    return props['API_KEY_MOVIES']
 }
 
 dependencies {
