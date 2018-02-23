@@ -41,6 +41,9 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     @BindView(R.id.server_error_view)
     View serverErrorView;
 
+    @BindView(R.id.empty_view)
+    View emptyView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +88,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showInternetError() {
+        emptyView.setVisibility(View.GONE);
         moviesRv.setVisibility(View.GONE);
         serverErrorView.setVisibility(View.GONE);
         loadingView.setVisibility(View.GONE);
@@ -93,6 +97,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showServerError() {
+        emptyView.setVisibility(View.GONE);
         moviesRv.setVisibility(View.GONE);
         loadingView.setVisibility(View.GONE);
         noConnectionView.setVisibility(View.GONE);
@@ -101,12 +106,16 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showEmptyState() {
-        this.showMoviesView();
-        // TODO: 2/23/18
+        moviesRv.setVisibility(View.GONE);
+        noConnectionView.setVisibility(View.GONE);
+        serverErrorView.setVisibility(View.GONE);
+        loadingView.setVisibility(View.GONE);
+        emptyView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showLoading() {
+        emptyView.setVisibility(View.GONE);
         moviesRv.setVisibility(View.GONE);
         noConnectionView.setVisibility(View.GONE);
         serverErrorView.setVisibility(View.GONE);
@@ -115,6 +124,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showMoviesView() {
+        emptyView.setVisibility(View.GONE);
         noConnectionView.setVisibility(View.GONE);
         serverErrorView.setVisibility(View.GONE);
         loadingView.setVisibility(View.GONE);

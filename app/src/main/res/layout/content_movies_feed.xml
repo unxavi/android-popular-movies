@@ -14,6 +14,8 @@
 
     <include layout="@layout/server_error_view" />
 
+    <include layout="@layout/empty_view" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/movies_rv"
         android:layout_width="match_parent"
