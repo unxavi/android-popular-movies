@@ -18,12 +18,25 @@ public interface ApiService {
     /* API PARAMS */
     String API_KEY_PARAM = "api_key";
 
+
+    /**
+     * Get movies top rated
+     * @param apiKey of the service
+     * @return response {@linkplain retrofit2.Call } with top rated movies of the API
+     * with a  {@linkplain com.icodehigh.popularmovies.model.MovieResponse } object
+     */
     @NonNull
     @GET(MOVIE_TOP_RATED_PATH)
     Call<MovieResponse> getTopRatedMovies(
             @Query(API_KEY_PARAM) String apiKey
     );
 
+    /**
+     * Get movies by most popular
+     * @param apiKey of the service
+     * @return response {@linkplain retrofit2.Call } with popular movies of the API
+     * with a  {@linkplain com.icodehigh.popularmovies.model.MovieResponse } object
+     */
     @NonNull
     @GET(MOVIE_POPULAR_PATH)
     Call<MovieResponse> getPopularMovies(
