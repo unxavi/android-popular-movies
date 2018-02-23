@@ -2,7 +2,6 @@ package com.icodehigh.popularmovies.features.moviesFeed;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +37,9 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @BindView(R.id.no_connection_view)
     View noConnectionView;
+
+    @BindView(R.id.server_error_view)
+    View serverErrorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,18 +86,17 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     @Override
     public void showInternetError() {
         moviesRv.setVisibility(View.GONE);
+        serverErrorView.setVisibility(View.GONE);
         loadingView.setVisibility(View.GONE);
         noConnectionView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showServerError() {
-        showMoviesView();
-        Snackbar.make(
-                rootView,
-                "There seems to be an error, try again later",
-                Snackbar.LENGTH_LONG)
-                .show();
+        moviesRv.setVisibility(View.GONE);
+        loadingView.setVisibility(View.GONE);
+        noConnectionView.setVisibility(View.GONE);
+        serverErrorView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -108,14 +109,17 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     public void showLoading() {
         moviesRv.setVisibility(View.GONE);
         noConnectionView.setVisibility(View.GONE);
+        serverErrorView.setVisibility(View.GONE);
         loadingView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showMoviesView() {
-        loadingView.setVisibility(View.GONE);
         noConnectionView.setVisibility(View.GONE);
+        serverErrorView.setVisibility(View.GONE);
+        loadingView.setVisibility(View.GONE);
         moviesRv.setVisibility(View.VISIBLE);
+
     }
 
     @Override
