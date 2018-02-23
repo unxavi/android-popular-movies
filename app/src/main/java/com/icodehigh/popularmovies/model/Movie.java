@@ -1,12 +1,16 @@
 package com.icodehigh.popularmovies.model;
 
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 import java.util.List;
 
 public class Movie {
+
+    private static final String BASE_POSTER_PATH = "http://image.tmdb.org/t/p/w185";
 
     @SerializedName("vote_count")
     private int voteCount;
@@ -49,5 +53,14 @@ public class Movie {
 
     @SerializedName("release_date")
     private Date releaseDate;
+
+    public String getCompletePosterPath() {
+        if (TextUtils.isEmpty(posterPath)) {
+            return null;
+        } else {
+            return String.format("%s%s", BASE_POSTER_PATH, posterPath);
+        }
+    }
+
 
 }
