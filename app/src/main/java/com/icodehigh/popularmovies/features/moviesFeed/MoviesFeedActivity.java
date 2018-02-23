@@ -2,9 +2,14 @@ package com.icodehigh.popularmovies.features.moviesFeed;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.icodehigh.popularmovies.R;
@@ -15,10 +20,18 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPresenter> implements MoviesFeedView {
+public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPresenter> implements
+        MoviesFeedView,
+        MoviesAdapter.MoviesAdapterOnClickHandler {
+
+    @BindView(R.id.root_view)
+    View rootView;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.movies_rv)
+    RecyclerView moviesRv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +70,55 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     }
 
     @Override
-    public void showInternetError() {
+    protected void onStart() {
+        super.onStart();
+        presenter.getMovies();
+    }
 
+    @Override
+    public void showInternetError() {
+        Snackbar.make(
+                rootView,
+                "Check your internet connection and try again",
+                Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+    @Override
+    public void showServerError() {
+        Snackbar.make(
+                rootView,
+                "There seems to be an error, try again later",
+                Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+    @Override
+    public void showEmptyState() {
+        // TODO: 2/23/18
     }
 
     @Override
     public void showLoading() {
-
+        // TODO: 2/23/18
     }
 
     @Override
     public void showMovieData(List<Movie> movies) {
+        LinearLayoutManager layoutManager =
+                new GridLayoutManager(
+                        this,
+                        2
+                );
+        moviesRv.setLayoutManager(layoutManager);
+        moviesRv.setHasFixedSize(true);
+        MoviesAdapter moviesAdapter = new MoviesAdapter(this, movies, this);
+        moviesRv.setAdapter(moviesAdapter);
 
+    }
+
+    @Override
+    public void onMovieClick(int id) {
+        // TODO: 2/23/18
     }
 }
