@@ -6,6 +6,9 @@ import com.icodehigh.popularmovies.model.Movie;
 
 import java.util.List;
 
+/**
+ * Interface to be implemented to show a Movies List from the API
+ */
 public interface MoviesFeedView extends MvpView {
 
     /**
