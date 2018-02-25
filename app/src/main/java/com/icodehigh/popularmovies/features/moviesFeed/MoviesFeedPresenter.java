@@ -2,6 +2,7 @@ package com.icodehigh.popularmovies.features.moviesFeed;
 
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import com.icodehigh.popularmovies.BuildConfig;
@@ -10,6 +11,7 @@ import com.icodehigh.popularmovies.model.MovieResponse;
 import com.icodehigh.popularmovies.rest.ServiceGenerator;
 import com.icodehigh.popularmovies.rest.service.ApiService;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -19,6 +21,8 @@ import retrofit2.Response;
 
 class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
 
+
+    private static final String TAG = "MoviesFeedPresenter";
 
     /**
      * Get movies from API and return them to the view if any, otherwise return the corresponding
@@ -59,13 +63,20 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
             }
 
             @Override
-            public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<MovieResponse> call, @NonNull final Throwable t) {
                 // if the response has a failure could be for many reasons, could be the lack
-                // of connection and might need to retry later
+                // of connection and might need to retry later or it could fail due to some
+                // mismatch of the response and Java models
                 ifViewAttached(new ViewAction<MoviesFeedView>() {
                     @Override
                     public void run(@NonNull MoviesFeedView view) {
-                        view.showInternetError();
+                        if (t instanceof IOException) {
+                            view.showInternetError();
+                        } else {
+                            // mismatch of the response and Java models probably
+                            view.showServerError();
+                            Log.e(TAG, "onFailure: ", t);
+                        }
                     }
                 });
             }
