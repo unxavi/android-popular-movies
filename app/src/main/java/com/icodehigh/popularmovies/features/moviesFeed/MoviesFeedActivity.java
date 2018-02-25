@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.icodehigh.popularmovies.R;
 import com.icodehigh.popularmovies.model.Movie;
@@ -33,16 +34,25 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     RecyclerView moviesRv;
 
     @BindView(R.id.loading_view)
-    View loadingView;
+    LottieAnimationView loadingView;
 
     @BindView(R.id.no_connection_view)
     View noConnectionView;
 
+    @BindView(R.id.no_connection_lottie)
+    LottieAnimationView noConnectionLottie;
+
     @BindView(R.id.server_error_view)
     View serverErrorView;
 
+    @BindView(R.id.server_error_lottie)
+    LottieAnimationView serverErrorViewLottie;
+
     @BindView(R.id.empty_view)
     View emptyView;
+
+    @BindView(R.id.empty_view_lottie)
+    LottieAnimationView emptyViewLottie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,46 +98,55 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showInternetError() {
-        emptyView.setVisibility(View.GONE);
         moviesRv.setVisibility(View.GONE);
-        serverErrorView.setVisibility(View.GONE);
-        loadingView.setVisibility(View.GONE);
+        hideEmptyView();
+        hideServerErrorView();
+        hideLoadingView();
         noConnectionView.setVisibility(View.VISIBLE);
+        noConnectionLottie.playAnimation();
     }
+
 
     @Override
     public void showServerError() {
-        emptyView.setVisibility(View.GONE);
         moviesRv.setVisibility(View.GONE);
-        loadingView.setVisibility(View.GONE);
-        noConnectionView.setVisibility(View.GONE);
+        hideEmptyView();
+        hideLoadingView();
+        hideNoConnectionView();
         serverErrorView.setVisibility(View.VISIBLE);
+        serverErrorViewLottie.playAnimation();
+
     }
 
     @Override
     public void showEmptyState() {
         moviesRv.setVisibility(View.GONE);
-        noConnectionView.setVisibility(View.GONE);
-        serverErrorView.setVisibility(View.GONE);
-        loadingView.setVisibility(View.GONE);
+        hideNoConnectionView();
+        hideServerErrorView();
+        hideLoadingView();
         emptyView.setVisibility(View.VISIBLE);
+        emptyViewLottie.playAnimation();
+
     }
+
 
     @Override
     public void showLoading() {
-        emptyView.setVisibility(View.GONE);
         moviesRv.setVisibility(View.GONE);
-        noConnectionView.setVisibility(View.GONE);
-        serverErrorView.setVisibility(View.GONE);
+        hideEmptyView();
+        hideNoConnectionView();
+        hideServerErrorView();
         loadingView.setVisibility(View.VISIBLE);
+        loadingView.playAnimation();
+
     }
 
     @Override
     public void showMoviesView() {
-        emptyView.setVisibility(View.GONE);
-        noConnectionView.setVisibility(View.GONE);
-        serverErrorView.setVisibility(View.GONE);
-        loadingView.setVisibility(View.GONE);
+        hideEmptyView();
+        hideNoConnectionView();
+        hideServerErrorView();
+        hideLoadingView();
         moviesRv.setVisibility(View.VISIBLE);
 
     }
@@ -150,4 +169,34 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     public void onMovieClick(int id) {
         // TODO: 2/23/18
     }
+
+    private void hideEmptyView() {
+        emptyView.setVisibility(View.GONE);
+        if (emptyViewLottie.isAnimating()) {
+            emptyViewLottie.pauseAnimation();
+        }
+    }
+
+    private void hideLoadingView() {
+        loadingView.setVisibility(View.GONE);
+        if (loadingView.isAnimating()) {
+            loadingView.pauseAnimation();
+        }
+    }
+
+    private void hideNoConnectionView() {
+        noConnectionView.setVisibility(View.GONE);
+        if (noConnectionLottie.isAnimating()) {
+            noConnectionLottie.pauseAnimation();
+        }
+    }
+
+    private void hideServerErrorView() {
+        serverErrorView.setVisibility(View.GONE);
+        if (serverErrorViewLottie.isAnimating()) {
+            serverErrorViewLottie.pauseAnimation();
+        }
+    }
+
+
 }
