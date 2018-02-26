@@ -76,6 +76,18 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     }
 
     /**
+     * Add more movies to show on the recycler view and refresh the list
+     *
+     * @param newMovies to be added to the recyclerView
+     */
+    void addMovies(List<Movie> newMovies) {
+        int lastOldPosition = this.movies.size();
+        this.movies.addAll(newMovies);
+        int lastNewPosition = this.movies.size();
+        this.notifyItemRangeInserted(lastOldPosition, lastNewPosition);
+    }
+
+    /**
      * A ViewHolder is a required part of the pattern for RecyclerViews.
      * this ViewHolder represents a movie view
      */

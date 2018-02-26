@@ -2,8 +2,8 @@ package com.icodehigh.popularmovies.features.moviesFeed;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -19,6 +19,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPresenter> implements
         MoviesFeedView,
@@ -53,6 +54,15 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @BindView(R.id.empty_view_lottie)
     LottieAnimationView emptyViewLottie;
+
+    private MoviesAdapter moviesAdapter;
+
+    // Recycler view load more on scroll control variables
+    private int visibleThreshold = 10;
+    private int lastVisibleItem;
+    private int totalItemCount;
+    private boolean isLoadingRV;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +103,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     @Override
     protected void onStart() {
         super.onStart();
-        presenter.getMovies();
+        presenter.onViewAttached();
     }
 
     @Override
@@ -106,6 +116,11 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         noConnectionLottie.playAnimation();
     }
 
+    @Override
+    public void showSoftInternetError() {
+        Snackbar.make(rootView, R.string.internet_error, Snackbar.LENGTH_SHORT).show();
+        isLoadingRV = false;
+    }
 
     @Override
     public void showServerError() {
@@ -115,7 +130,12 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         hideNoConnectionView();
         serverErrorView.setVisibility(View.VISIBLE);
         serverErrorViewLottie.playAnimation();
+    }
 
+    @Override
+    public void showSoftServerError() {
+        Snackbar.make(rootView, R.string.server_error, Snackbar.LENGTH_SHORT).show();
+        isLoadingRV = false;
     }
 
     @Override
@@ -153,16 +173,45 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showMovieData(List<Movie> movies) {
-        LinearLayoutManager layoutManager =
-                new GridLayoutManager(
-                        this,
-                        2
-                );
-        moviesRv.setLayoutManager(layoutManager);
-        moviesRv.setHasFixedSize(true);
-        MoviesAdapter moviesAdapter = new MoviesAdapter(this, movies, this);
-        moviesRv.setAdapter(moviesAdapter);
-        showMoviesView();
+        if (moviesAdapter == null) {
+            moviesAdapter = new MoviesAdapter(this, movies, this);
+            final GridLayoutManager gridLayoutManager = new GridLayoutManager(
+                    this,
+                    2
+            );
+            moviesRv.setLayoutManager(gridLayoutManager);
+            moviesRv.setHasFixedSize(true);
+            moviesRv.setAdapter(moviesAdapter);
+            moviesRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    totalItemCount = gridLayoutManager.getItemCount();
+                    lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition();
+                    if ((!isLoadingRV && totalItemCount <= (lastVisibleItem + visibleThreshold))) {
+                        isLoadingRV = true;
+                        moviesRv.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                presenter.getMovies();
+                            }
+
+                        });
+                    }
+                }
+            });
+            showMoviesView();
+        } else {
+            if (isLoadingRV) {
+                isLoadingRV = false;
+                moviesAdapter.addMovies(movies);
+            }
+        }
+    }
+
+    @OnClick({R.id.no_connection_view, R.id.server_error_view})
+    public void onViewClicked(View view) {
+        presenter.getMovies();
     }
 
     @Override
@@ -197,6 +246,5 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
             serverErrorViewLottie.pauseAnimation();
         }
     }
-
 
 }
