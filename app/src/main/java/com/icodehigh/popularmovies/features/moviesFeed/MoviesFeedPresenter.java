@@ -57,6 +57,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
     /**
      * Called if there is a need to reset the presenter, like switching from one movie list mode
      * to another
+     *
      * @param movieListMode {@link MoviesPreferences.MoviesListMode} to load from API
      */
     void resetPresenter(int movieListMode) {
@@ -104,6 +105,13 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
         // Create the ApiService object and enqueue the call
         setApiCallForMovieList();
         if (popularMoviesCall != null) {
+            // Inform the view that the presenter is loading data
+            ifViewAttached(new ViewAction<MoviesFeedView>() {
+                @Override
+                public void run(@NonNull MoviesFeedView view) {
+                    view.isPreseterLoadingData(true);
+                }
+            });
             popularMoviesCall.enqueue(new Callback<MovieResponse>() {
                 @Override
                 public void onResponse(
@@ -168,6 +176,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
             ifViewAttached(new ViewAction<MoviesFeedView>() {
                 @Override
                 public void run(@NonNull MoviesFeedView view) {
+                    view.isPreseterLoadingData(false);
                     if (page == ApiService.FIRST_PAGE_API) {
                         view.showEmptyState();
                     } else {
@@ -180,6 +189,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
             ifViewAttached(new ViewAction<MoviesFeedView>() {
                 @Override
                 public void run(@NonNull MoviesFeedView view) {
+                    view.isPreseterLoadingData(false);
                     view.setMovieData(movies);
                 }
             });
@@ -195,6 +205,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
         ifViewAttached(new ViewAction<MoviesFeedView>() {
             @Override
             public void run(@NonNull MoviesFeedView view) {
+                view.isPreseterLoadingData(false);
                 if (page == ApiService.FIRST_PAGE_API) {
                     view.showServerError();
                 } else {
@@ -212,6 +223,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
         ifViewAttached(new ViewAction<MoviesFeedView>() {
             @Override
             public void run(@NonNull MoviesFeedView view) {
+                view.isPreseterLoadingData(false);
                 if (page == ApiService.FIRST_PAGE_API) {
                     view.showInternetError();
                 } else {

@@ -94,6 +94,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         initMovieSpinner();
+        presenter.onViewAttached(moviesListModePreference);
     }
 
     private void initMovieSpinner() {
@@ -116,10 +117,9 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         if (moviesListModePreference != position) {
             MoviesPreferences.setMoviesListPreference(this, position);
             moviesListModePreference = position;
-            if(moviesAdapter != null){
+            if (moviesAdapter != null) {
                 moviesAdapter.clear();
             }
-            isLoadingRV = true;
             presenter.resetPresenter(moviesListModePreference);
         }
     }
@@ -136,9 +136,8 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        presenter.onViewAttached(moviesListModePreference);
+    public void isPreseterLoadingData(boolean isLoading) {
+        isLoadingRV = isLoading;
     }
 
     @Override
@@ -154,7 +153,6 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     @Override
     public void showSoftInternetError() {
         Snackbar.make(rootView, R.string.internet_error, Snackbar.LENGTH_SHORT).show();
-        isLoadingRV = false;
     }
 
     @Override
@@ -170,7 +168,6 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     @Override
     public void showSoftServerError() {
         Snackbar.make(rootView, R.string.server_error, Snackbar.LENGTH_SHORT).show();
-        isLoadingRV = false;
     }
 
     @Override
@@ -181,7 +178,6 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         hideLoadingView();
         emptyView.setVisibility(View.VISIBLE);
         emptyViewLottie.playAnimation();
-
     }
 
 
@@ -209,7 +205,6 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     @Override
     public void setMovieData(List<Movie> movies) {
         if (moviesAdapter == null) {
-            isLoadingRV = false;
             moviesAdapter = new MoviesAdapter(this, movies, this);
             final GridLayoutManager gridLayoutManager = new GridLayoutManager(
                     this,
@@ -225,7 +220,6 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
                     totalItemCount = gridLayoutManager.getItemCount();
                     lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition();
                     if ((!isLoadingRV && !isApiInLastPage && totalItemCount <= (lastVisibleItem + visibleThreshold))) {
-                        isLoadingRV = true;
                         moviesRv.post(new Runnable() {
                             @Override
                             public void run() {
@@ -237,10 +231,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
                 }
             });
         } else {
-            if (isLoadingRV) {
-                isLoadingRV = false;
-                moviesAdapter.addMovies(movies);
-            }
+            moviesAdapter.addMovies(movies);
         }
         showMoviesView();
     }

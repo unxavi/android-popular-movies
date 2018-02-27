@@ -63,4 +63,12 @@ public interface MoviesFeedView extends MvpView {
      * of the paginations, inform the view that there is no need to request more pages
      */
     void onApiLastPage();
+
+
+    /**
+     * Helper method to inform the view that the presenter is loading data or if it has finish
+     *
+     * @param isLoading boolean if the presenter is loading or not
+     */
+    void isPreseterLoadingData(boolean isLoading);
 }
