@@ -55,7 +55,7 @@ public interface MoviesFeedView extends MvpView {
      *
      * @param movies list to show on the activity
      */
-    void showMovieData(List<Movie> movies);
+    void setMovieData(List<Movie> movies);
 
 
     /**

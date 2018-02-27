@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import com.airbnb.lottie.LottieAnimationView;
 import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.icodehigh.popularmovies.R;
+import com.icodehigh.popularmovies.data.MoviesPreferences;
 import com.icodehigh.popularmovies.model.Movie;
 
 import java.util.List;
@@ -24,7 +25,7 @@ import butterknife.OnClick;
 
 public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPresenter> implements
         MoviesFeedView,
-        MoviesAdapter.MoviesAdapterOnClickHandler, 
+        MoviesAdapter.MoviesAdapterOnClickHandler,
         AdapterView.OnItemSelectedListener {
 
     @BindView(R.id.root_view)
@@ -62,6 +63,8 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     private MoviesAdapter moviesAdapter;
 
+    private int moviesListModePreference;
+
     /*
      * how many items can we have without loading from the api
      */
@@ -84,7 +87,6 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
      */
     private boolean isApiInLastPage;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,11 +106,22 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         moviesCategoriesSp.setAdapter(adapter);
         // Set listener to respond to events
         moviesCategoriesSp.setOnItemSelectedListener(this);
+        // Set the position of the option saved on the spinner
+        moviesListModePreference = MoviesPreferences.getMoviesListPreference(this);
+        moviesCategoriesSp.setSelection(moviesListModePreference, true);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+        if (moviesListModePreference != position) {
+            MoviesPreferences.setMoviesListPreference(this, position);
+            moviesListModePreference = position;
+            if(moviesAdapter != null){
+                moviesAdapter.clear();
+            }
+            isLoadingRV = true;
+            presenter.resetPresenter(moviesListModePreference);
+        }
     }
 
     @Override
@@ -125,7 +138,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     @Override
     protected void onStart() {
         super.onStart();
-        presenter.onViewAttached();
+        presenter.onViewAttached(moviesListModePreference);
     }
 
     @Override
@@ -194,8 +207,9 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     }
 
     @Override
-    public void showMovieData(List<Movie> movies) {
+    public void setMovieData(List<Movie> movies) {
         if (moviesAdapter == null) {
+            isLoadingRV = false;
             moviesAdapter = new MoviesAdapter(this, movies, this);
             final GridLayoutManager gridLayoutManager = new GridLayoutManager(
                     this,
@@ -222,13 +236,13 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
                     }
                 }
             });
-            showMoviesView();
         } else {
             if (isLoadingRV) {
                 isLoadingRV = false;
                 moviesAdapter.addMovies(movies);
             }
         }
+        showMoviesView();
     }
 
     @Override

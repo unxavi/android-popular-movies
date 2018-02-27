@@ -76,6 +76,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     }
 
     /**
+     * Helper method to clear the adapter
+     */
+    void clear() {
+        int size = movies.size();
+        movies.clear();
+        notifyItemRangeRemoved(0, size);
+    }
+
+    /**
      * Add more movies to show on the recycler view and refresh the list
      *
      * @param newMovies to be added to the recyclerView
