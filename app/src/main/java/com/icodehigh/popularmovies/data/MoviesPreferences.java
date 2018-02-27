@@ -26,12 +26,6 @@ import java.lang.annotation.RetentionPolicy;
 
 public final class MoviesPreferences {
 
-    // Define the list of accepted constants and declare the MoviesListMode annotation
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({POPULAR_MOVIES_LIST, TOP_RATED_MOVIES_LIST})
-    public @interface MoviesListMode {
-    }
-
     // Declare the constants for movies list types
     public static final int POPULAR_MOVIES_LIST = 0;
     public static final int TOP_RATED_MOVIES_LIST = 1;
@@ -40,6 +34,12 @@ public final class MoviesPreferences {
      * key to store in share preferences what movie list to load
      */
     private static final String MOVIE_LIST_PREFERENCE = "movie_list_preference";
+
+    // Define the list of accepted constants and declare the MoviesListMode annotation
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({POPULAR_MOVIES_LIST, TOP_RATED_MOVIES_LIST})
+    public @interface MoviesListMode {
+    }
 
     /**
      * Helper to get the default shared preferences
