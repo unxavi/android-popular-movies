@@ -30,6 +30,16 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         AdapterView.OnItemSelectedListener,
         SwipeRefreshLayout.OnRefreshListener {
 
+    /*
+     * how many columns will have the grid
+     */
+    private static final int SPAN_COUNT_RV = 2;
+
+    /*
+     * how many items can we have without loading from the api
+     */
+    private static final int VISIBLE_THRESHOLD = 10;
+
     @BindView(R.id.root_view)
     View rootView;
 
@@ -71,10 +81,6 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     private int moviesListModePreference;
 
-    /*
-     * how many items can we have without loading from the api
-     */
-    private int visibleThreshold = 10;
     /*
      * The position of the last item visible
      */
@@ -214,7 +220,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
             moviesAdapter = new MoviesAdapter(this, movies, this);
             final GridLayoutManager gridLayoutManager = new GridLayoutManager(
                     this,
-                    2
+                    SPAN_COUNT_RV
             );
             moviesRv.setLayoutManager(gridLayoutManager);
             moviesRv.setHasFixedSize(true);
@@ -225,7 +231,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
                     super.onScrolled(recyclerView, dx, dy);
                     totalItemCount = gridLayoutManager.getItemCount();
                     lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition();
-                    if ((!isLoadingRV && !isApiInLastPage && totalItemCount <= (lastVisibleItem + visibleThreshold))) {
+                    if ((!isLoadingRV && !isApiInLastPage && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD))) {
                         moviesRv.post(new Runnable() {
                             @Override
                             public void run() {
