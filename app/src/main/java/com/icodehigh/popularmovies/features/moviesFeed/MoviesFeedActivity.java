@@ -141,7 +141,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     }
 
     @Override
-    public void isPreseterLoadingData(boolean isLoading) {
+    public void isPresenterLoadingData(boolean isLoading) {
         isLoadingRV = isLoading;
         contentView.setRefreshing(isLoading);
     }
