@@ -56,7 +56,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
 
     /**
      * Called if there is a need to reset the presenter, like switching from one movie list mode
-     * to another
+     * to another or just refresh over the API
      *
      * @param movieListMode {@link MoviesPreferences.MoviesListMode} to load from API
      */

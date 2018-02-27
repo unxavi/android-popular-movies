@@ -3,6 +3,7 @@ package com.icodehigh.popularmovies.features.moviesFeed;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -26,13 +27,17 @@ import butterknife.OnClick;
 public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPresenter> implements
         MoviesFeedView,
         MoviesAdapter.MoviesAdapterOnClickHandler,
-        AdapterView.OnItemSelectedListener {
+        AdapterView.OnItemSelectedListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.root_view)
     View rootView;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.contentView)
+    SwipeRefreshLayout contentView;
 
     @BindView(R.id.movies_rv)
     RecyclerView moviesRv;
@@ -60,6 +65,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @BindView(R.id.movies_categories_sp)
     Spinner moviesCategoriesSp;
+
 
     private MoviesAdapter moviesAdapter;
 
@@ -95,6 +101,8 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         setSupportActionBar(toolbar);
         initMovieSpinner();
         presenter.onViewAttached(moviesListModePreference);
+        // Setup SwipeRefreshView
+        contentView.setOnRefreshListener(this);
     }
 
     private void initMovieSpinner() {
@@ -117,10 +125,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         if (moviesListModePreference != position) {
             MoviesPreferences.setMoviesListPreference(this, position);
             moviesListModePreference = position;
-            if (moviesAdapter != null) {
-                moviesAdapter.clear();
-            }
-            presenter.resetPresenter(moviesListModePreference);
+            refreshView();
         }
     }
 
@@ -138,11 +143,12 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     @Override
     public void isPreseterLoadingData(boolean isLoading) {
         isLoadingRV = isLoading;
+        contentView.setRefreshing(isLoading);
     }
 
     @Override
     public void showInternetError() {
-        moviesRv.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
         hideEmptyView();
         hideServerErrorView();
         hideLoadingView();
@@ -157,7 +163,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showServerError() {
-        moviesRv.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
         hideEmptyView();
         hideLoadingView();
         hideNoConnectionView();
@@ -172,7 +178,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showEmptyState() {
-        moviesRv.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
         hideNoConnectionView();
         hideServerErrorView();
         hideLoadingView();
@@ -183,7 +189,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showLoading() {
-        moviesRv.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
         hideEmptyView();
         hideNoConnectionView();
         hideServerErrorView();
@@ -198,7 +204,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         hideNoConnectionView();
         hideServerErrorView();
         hideLoadingView();
-        moviesRv.setVisibility(View.VISIBLE);
+        contentView.setVisibility(View.VISIBLE);
 
     }
 
@@ -241,6 +247,12 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         isApiInLastPage = true;
     }
 
+    @Override
+    public void onRefresh() {
+        refreshView();
+    }
+
+
     @OnClick({R.id.no_connection_view, R.id.server_error_view})
     public void onViewClicked(View view) {
         presenter.getMovies();
@@ -249,6 +261,13 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     @Override
     public void onMovieClick(int id) {
         // TODO: 2/23/18
+    }
+
+    private void refreshView() {
+        if (moviesAdapter != null) {
+            moviesAdapter.clear();
+        }
+        presenter.resetPresenter(moviesListModePreference);
     }
 
     private void hideEmptyView() {
