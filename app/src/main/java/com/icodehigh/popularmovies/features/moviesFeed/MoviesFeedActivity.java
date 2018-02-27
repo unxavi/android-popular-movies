@@ -164,7 +164,9 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showSoftInternetError() {
-        Snackbar.make(rootView, R.string.internet_error, Snackbar.LENGTH_SHORT).show();
+        Snackbar snackbar = Snackbar.make(rootView, R.string.internet_error, Snackbar.LENGTH_LONG);
+        snackbar.setAction(getString(R.string.retry), new RetryApiActionListener(getPresenter()));
+        snackbar.show();
     }
 
     @Override
@@ -179,7 +181,9 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @Override
     public void showSoftServerError() {
-        Snackbar.make(rootView, R.string.server_error, Snackbar.LENGTH_SHORT).show();
+        Snackbar snackbar = Snackbar.make(rootView, R.string.server_error, Snackbar.LENGTH_LONG);
+        snackbar.setAction(getString(R.string.retry), new RetryApiActionListener(getPresenter()));
+        snackbar.show();
     }
 
     @Override
