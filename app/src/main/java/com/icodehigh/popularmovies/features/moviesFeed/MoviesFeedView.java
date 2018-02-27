@@ -55,7 +55,20 @@ public interface MoviesFeedView extends MvpView {
      *
      * @param movies list to show on the activity
      */
-    void showMovieData(List<Movie> movies);
+    void setMovieData(List<Movie> movies);
 
 
+    /**
+     * If the api does not respond with any movie on the list, it means it has reached the end
+     * of the paginations, inform the view that there is no need to request more pages
+     */
+    void onApiLastPage();
+
+
+    /**
+     * Helper method to inform the view that the presenter is loading data or if it has finish
+     *
+     * @param isLoading boolean if the presenter is loading or not
+     */
+    void isPresenterLoadingData(boolean isLoading);
 }

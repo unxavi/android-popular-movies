@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
 import java.util.List;
 
 public class Movie {
@@ -52,7 +51,7 @@ public class Movie {
     private String overview;
 
     @SerializedName("release_date")
-    private Date releaseDate;
+    private String releaseDate;
 
     public int getId() {
         return id;
