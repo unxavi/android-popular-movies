@@ -70,5 +70,5 @@ public interface MoviesFeedView extends MvpView {
      *
      * @param isLoading boolean if the presenter is loading or not
      */
-    void isPreseterLoadingData(boolean isLoading);
+    void isPresenterLoadingData(boolean isLoading);
 }

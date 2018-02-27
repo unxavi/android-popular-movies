@@ -109,7 +109,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
             ifViewAttached(new ViewAction<MoviesFeedView>() {
                 @Override
                 public void run(@NonNull MoviesFeedView view) {
-                    view.isPreseterLoadingData(true);
+                    view.isPresenterLoadingData(true);
                 }
             });
             popularMoviesCall.enqueue(new Callback<MovieResponse>() {
@@ -176,7 +176,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
             ifViewAttached(new ViewAction<MoviesFeedView>() {
                 @Override
                 public void run(@NonNull MoviesFeedView view) {
-                    view.isPreseterLoadingData(false);
+                    view.isPresenterLoadingData(false);
                     if (page == ApiService.FIRST_PAGE_API) {
                         view.showEmptyState();
                     } else {
@@ -189,7 +189,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
             ifViewAttached(new ViewAction<MoviesFeedView>() {
                 @Override
                 public void run(@NonNull MoviesFeedView view) {
-                    view.isPreseterLoadingData(false);
+                    view.isPresenterLoadingData(false);
                     view.setMovieData(movies);
                 }
             });
@@ -205,7 +205,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
         ifViewAttached(new ViewAction<MoviesFeedView>() {
             @Override
             public void run(@NonNull MoviesFeedView view) {
-                view.isPreseterLoadingData(false);
+                view.isPresenterLoadingData(false);
                 if (page == ApiService.FIRST_PAGE_API) {
                     view.showServerError();
                 } else {
@@ -223,7 +223,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
         ifViewAttached(new ViewAction<MoviesFeedView>() {
             @Override
             public void run(@NonNull MoviesFeedView view) {
-                view.isPreseterLoadingData(false);
+                view.isPresenterLoadingData(false);
                 if (page == ApiService.FIRST_PAGE_API) {
                     view.showInternetError();
                 } else {
