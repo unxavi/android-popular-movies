@@ -6,9 +6,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.hannesdorfmann.mosby3.mvp.MvpActivity;
@@ -23,7 +24,8 @@ import butterknife.OnClick;
 
 public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPresenter> implements
         MoviesFeedView,
-        MoviesAdapter.MoviesAdapterOnClickHandler {
+        MoviesAdapter.MoviesAdapterOnClickHandler, 
+        AdapterView.OnItemSelectedListener {
 
     @BindView(R.id.root_view)
     View rootView;
@@ -54,6 +56,9 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     @BindView(R.id.empty_view_lottie)
     LottieAnimationView emptyViewLottie;
+
+    @BindView(R.id.movies_categories_sp)
+    Spinner moviesCategoriesSp;
 
     private MoviesAdapter moviesAdapter;
 
@@ -86,28 +91,29 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         setContentView(R.layout.activity_movies_feed);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        initMovieSpinner();
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_movies_feed, menu);
-        return true;
+    private void initMovieSpinner() {
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.movies_categories, R.layout.spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        moviesCategoriesSp.setAdapter(adapter);
+        // Set listener to respond to events
+        moviesCategoriesSp.setOnItemSelectedListener(this);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
     @NonNull
@@ -267,5 +273,4 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
             serverErrorViewLottie.pauseAnimation();
         }
     }
-
 }
