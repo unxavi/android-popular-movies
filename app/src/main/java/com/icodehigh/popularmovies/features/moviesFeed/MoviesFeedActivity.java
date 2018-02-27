@@ -57,11 +57,27 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     private MoviesAdapter moviesAdapter;
 
-    // Recycler view load more on scroll control variables
+    /*
+     * how many items can we have without loading from the api
+     */
     private int visibleThreshold = 10;
+    /*
+     * The position of the last item visible
+     */
     private int lastVisibleItem;
+    /*
+     * Total amount of items on the RecyclerView
+     */
     private int totalItemCount;
+    /*
+     * Is the presenter loading items from the API
+     */
     private boolean isLoadingRV;
+    /*
+     * Has the API returned a page with no movies meaning that it has no more movies
+     * to offer to show
+     */
+    private boolean isApiInLastPage;
 
 
     @Override
@@ -188,7 +204,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
                     super.onScrolled(recyclerView, dx, dy);
                     totalItemCount = gridLayoutManager.getItemCount();
                     lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition();
-                    if ((!isLoadingRV && totalItemCount <= (lastVisibleItem + visibleThreshold))) {
+                    if ((!isLoadingRV && !isApiInLastPage && totalItemCount <= (lastVisibleItem + visibleThreshold))) {
                         isLoadingRV = true;
                         moviesRv.post(new Runnable() {
                             @Override
@@ -207,6 +223,11 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
                 moviesAdapter.addMovies(movies);
             }
         }
+    }
+
+    @Override
+    public void onApiLastPage() {
+        isApiInLastPage = true;
     }
 
     @OnClick({R.id.no_connection_view, R.id.server_error_view})

@@ -11,6 +11,8 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
+   int FIRST_PAGE_API = 1;
+
     /* API PATHS */
     String MOVIE_TOP_RATED_PATH = "movie/top_rated";
     String MOVIE_POPULAR_PATH = "movie/popular";

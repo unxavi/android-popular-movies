@@ -25,7 +25,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
 
     private static final String TAG = "MoviesFeedPresenter";
 
-    private int page = 1;
+    private int page = ApiService.FIRST_PAGE_API;
 
     private List<Movie> moviesList = new ArrayList<>();
 
@@ -38,7 +38,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
     void onViewAttached() {
         if (moviesList == null || moviesList.isEmpty()) {
             getMovies();
-            page = 1;
+            page = ApiService.FIRST_PAGE_API;
         } else {
             ifViewAttached(new ViewAction<MoviesFeedView>() {
                 @Override
@@ -115,12 +115,16 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
         if (movies.isEmpty()) {
             // if there are no objects on the respond show a view that
             // there are no movies available
-            ifViewAttached(new ViewAction<MoviesFeedView>() {
-                @Override
-                public void run(@NonNull MoviesFeedView view) {
-                    view.showEmptyState();
-                }
-            });
+                ifViewAttached(new ViewAction<MoviesFeedView>() {
+                    @Override
+                    public void run(@NonNull MoviesFeedView view) {
+                        if (page == ApiService.FIRST_PAGE_API) {
+                            view.showEmptyState();
+                        }else{
+                            view.onApiLastPage();
+                        }
+                    }
+                });
         } else {
             // if there are objects on the respond show a view that there are no movies available
             ifViewAttached(new ViewAction<MoviesFeedView>() {
@@ -141,7 +145,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
         ifViewAttached(new ViewAction<MoviesFeedView>() {
             @Override
             public void run(@NonNull MoviesFeedView view) {
-                if (page == 1) {
+                if (page == ApiService.FIRST_PAGE_API) {
                     view.showServerError();
                 } else {
                     view.showSoftServerError();
@@ -158,7 +162,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
         ifViewAttached(new ViewAction<MoviesFeedView>() {
             @Override
             public void run(@NonNull MoviesFeedView view) {
-                if (page == 1) {
+                if (page == ApiService.FIRST_PAGE_API) {
                     view.showInternetError();
                 } else {
                     view.showSoftInternetError();

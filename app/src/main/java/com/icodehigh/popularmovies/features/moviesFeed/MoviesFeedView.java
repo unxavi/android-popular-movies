@@ -58,4 +58,9 @@ public interface MoviesFeedView extends MvpView {
     void showMovieData(List<Movie> movies);
 
 
+    /**
+     * If the api does not respond with any movie on the list, it means it has reached the end
+     * of the paginations, inform the view that there is no need to request more pages
+     */
+    void onApiLastPage();
 }
