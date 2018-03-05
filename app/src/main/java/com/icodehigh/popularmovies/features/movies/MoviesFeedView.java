@@ -1,4 +1,4 @@
-package com.icodehigh.popularmovies.features.moviesfeed;
+package com.icodehigh.popularmovies.features.movies;
 
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;

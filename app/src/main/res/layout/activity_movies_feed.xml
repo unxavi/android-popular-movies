@@ -5,7 +5,7 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.icodehigh.popularmovies.features.moviesfeed.MoviesFeedActivity">
+    tools:context="com.icodehigh.popularmovies.features.movies.MoviesFeedActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
