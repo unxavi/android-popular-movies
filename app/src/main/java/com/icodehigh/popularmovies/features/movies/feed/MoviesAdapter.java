@@ -1,4 +1,4 @@
-package com.icodehigh.popularmovies.features.movies;
+package com.icodehigh.popularmovies.features.movies.feed;
 
 
 import android.content.Context;
