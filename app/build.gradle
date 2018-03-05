@@ -22,7 +22,7 @@ android {
     }
 }
 
-static def getApiKeyMovies(){
+static def getApiKeyMovies() {
     Properties props = new Properties()
     props.load(new FileInputStream(new File('secrets.properties')))
     return props['API_KEY_MOVIES']

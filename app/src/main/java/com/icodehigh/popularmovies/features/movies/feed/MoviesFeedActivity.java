@@ -1,5 +1,6 @@
 package com.icodehigh.popularmovies.features.movies.feed;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.icodehigh.popularmovies.R;
 import com.icodehigh.popularmovies.data.MoviesPreferences;
+import com.icodehigh.popularmovies.features.movies.detail.MovieDetailActivity;
 import com.icodehigh.popularmovies.model.Movie;
 
 import java.util.List;
@@ -269,8 +271,10 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     }
 
     @Override
-    public void onMovieClick(int id) {
-        // TODO: 2/23/18
+    public void onMovieClick(Movie movie) {
+        Intent intent = new Intent(this, MovieDetailActivity.class);
+        intent.putExtra(Movie.class.getSimpleName(), movie);
+        startActivity(intent);
     }
 
     private void refreshView() {
