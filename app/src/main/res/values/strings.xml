@@ -6,8 +6,9 @@
     <string name="server_error">There seems to be an error, try again later</string>
     <string name="empty_view_message">It seems that there are no results for your search</string>
     <string name="retry">Retry</string>
-    <string name="title_activity_movie_detail">MovieDetailActivity</string>
+    <string name="title_activity_movie_detail">Movie Detail</string>
 
     <!-- Error messages-->
     <string name="detail_error_message">Movie data not available</string>
+    <string name="rate_text">%s/10</string>
 </resources>

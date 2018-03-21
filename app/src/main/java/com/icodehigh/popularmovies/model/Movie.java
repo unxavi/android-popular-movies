@@ -102,6 +102,22 @@ public class Movie implements Parcelable {
         return id;
     }
 
+    public double getVoteAverage() {
+        return voteAverage;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
     public String getCompletePosterPath() {
         if (TextUtils.isEmpty(posterPath)) {
             return null;
