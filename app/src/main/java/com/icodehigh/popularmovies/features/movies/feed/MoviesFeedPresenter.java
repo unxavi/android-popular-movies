@@ -1,4 +1,4 @@
-package com.icodehigh.popularmovies.features.moviesfeed;
+package com.icodehigh.popularmovies.features.movies.feed;
 
 
 import android.support.annotation.NonNull;
@@ -45,8 +45,8 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
     /*
      * Movies list type to query the API
      */
-    private @MoviesPreferences.MoviesListMode
-    int moviesListMode;
+    @MoviesPreferences.MoviesListMode
+    private int moviesListMode;
 
     /*
      * API Service to make Retrofit calls
@@ -60,7 +60,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
      *
      * @param movieListMode {@link MoviesPreferences.MoviesListMode} to load from API
      */
-    void resetPresenter(int movieListMode) {
+    void resetPresenter(@MoviesPreferences.MoviesListMode int movieListMode) {
         this.moviesList.clear();
         this.page = ApiService.FIRST_PAGE_API;
         this.moviesListMode = movieListMode;

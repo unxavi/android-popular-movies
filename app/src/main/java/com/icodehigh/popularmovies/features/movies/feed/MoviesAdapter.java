@@ -1,8 +1,10 @@
-package com.icodehigh.popularmovies.features.moviesfeed;
+package com.icodehigh.popularmovies.features.movies.feed;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +40,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
      * The interface that receives onMovieClick messages and handle it.
      */
     public interface MoviesAdapterOnClickHandler {
-        void onMovieClick(int id);
+        void onMovieClick(Movie movie);
     }
 
     /**
@@ -55,8 +57,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).
                 inflate(R.layout.item_movie, parent, false);
         view.setFocusable(true);
@@ -64,14 +67,21 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Movie movie = movies.get(position);
-        String completePosterPath = movie.getCompletePosterPath();
-        Picasso.with(context)
-                .load(completePosterPath)
-                .placeholder(R.drawable.ic_movie_placeholder)
-                .error(R.drawable.ic_movie_placeholder)
-                .into(holder.moviesIv);
+        if (TextUtils.isEmpty(movie.getCompletePosterPath())) {
+            holder.moviesIv.setImageDrawable(
+                    context.getResources().getDrawable(R.drawable.ic_movie_placeholder)
+            );
+
+        } else {
+            Picasso.with(context)
+                    .load(movie.getCompletePosterPath())
+                    .placeholder(R.drawable.ic_movie_placeholder)
+                    .error(R.drawable.ic_movie_placeholder)
+                    .into(holder.moviesIv);
+        }
+
     }
 
     @Override
@@ -125,7 +135,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         @Override
         public void onClick(View view) {
             Movie movie = movies.get(getAdapterPosition());
-            listener.onMovieClick(movie.getId());
+            listener.onMovieClick(movie);
         }
     }
 }

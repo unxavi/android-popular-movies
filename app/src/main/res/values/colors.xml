@@ -3,4 +3,5 @@
     <color name="colorPrimary">#191919</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#118675</color>
+    <color name="title_movie_background">#118675</color>
 </resources>
