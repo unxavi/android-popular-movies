@@ -2,6 +2,7 @@ package com.icodehigh.popularmovies.features.movies.feed;
 
 
 import android.content.Context;
+wimport android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -56,8 +57,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).
                 inflate(R.layout.item_movie, parent, false);
         view.setFocusable(true);
@@ -65,7 +67,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Movie movie = movies.get(position);
         if (TextUtils.isEmpty(movie.getCompletePosterPath())) {
             holder.moviesIv.setImageDrawable(
