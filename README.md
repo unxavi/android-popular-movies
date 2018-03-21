@@ -13,3 +13,8 @@ content inside:
 ```
 API_KEY_MOVIES=="YOUR_API_KEY"
 ```
+
+### Attrubutions
+
+Lottie animations are from the free website [lottie files](https://www.lottiefiles.com) where 
+is free to share them.
