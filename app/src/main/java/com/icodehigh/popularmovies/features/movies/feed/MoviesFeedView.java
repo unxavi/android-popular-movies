@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Interface to be implemented to show a Movies List from the API
  */
-public interface MoviesFeedView extends MvpView {
+interface MoviesFeedView extends MvpView {
 
     /**
      * Method called if the Api Call fails for a device error

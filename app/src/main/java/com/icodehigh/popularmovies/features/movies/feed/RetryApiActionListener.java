@@ -6,7 +6,7 @@ class RetryApiActionListener implements View.OnClickListener {
 
     private MoviesFeedPresenter moviesFeedPresenter;
 
-    public RetryApiActionListener(MoviesFeedPresenter moviesFeedPresenter) {
+    RetryApiActionListener(MoviesFeedPresenter moviesFeedPresenter) {
         this.moviesFeedPresenter = moviesFeedPresenter;
     }
 

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Popular Movies</string>
-    <string name="action_settings">Settings</string>
     <string name="movie_poster_content_description">Movie poster image</string>
     <string name="internet_error">Check your internet connection and try again</string>
     <string name="server_error">There seems to be an error, try again later</string>
