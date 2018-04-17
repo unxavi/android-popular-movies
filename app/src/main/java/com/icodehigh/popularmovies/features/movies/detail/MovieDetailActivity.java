@@ -4,23 +4,27 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.icodehigh.popularmovies.R;
 import com.icodehigh.popularmovies.data.FavoriteMovieContract;
 import com.icodehigh.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MovieDetailActivity extends AppCompatActivity {
+public class MovieDetailActivity extends
+        MvpActivity<MovieDetailView, MovieDetailPresenter> implements MovieDetailView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -105,5 +109,31 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (uri != null) {
             Toast.makeText(this, uri.toString(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    @NonNull
+    @Override
+    public MovieDetailPresenter createPresenter() {
+        return new MovieDetailPresenter();
+    }
+
+    @Override
+    public void showSoftInternetError() {
+
+    }
+
+    @Override
+    public void showSoftServerError() {
+
+    }
+
+    @Override
+    public void setTrailersData(List<Movie> movies) {
+
+    }
+
+    @Override
+    public void setReviewsData(List<Movie> movies) {
+
     }
 }
