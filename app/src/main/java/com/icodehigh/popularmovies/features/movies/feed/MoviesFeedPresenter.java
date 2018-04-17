@@ -136,6 +136,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
      * error to show the user what has happened.
      */
     void getMovies() {
+        // TODO: 4/17/18 getting movies should be handle by a repository, to get from the DB or API
         if (moviesListMode == MoviesPreferences.POPULAR_MOVIES_LIST || moviesListMode == MoviesPreferences.TOP_RATED_MOVIES_LIST) {
             // Show to the user that the movies are being loaded
             if (page == 1) {
