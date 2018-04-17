@@ -1,9 +1,15 @@
 package com.icodehigh.popularmovies.features.movies.feed;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,21 +22,26 @@ import android.widget.Spinner;
 import com.airbnb.lottie.LottieAnimationView;
 import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.icodehigh.popularmovies.R;
+import com.icodehigh.popularmovies.data.FavoriteMovieContract;
 import com.icodehigh.popularmovies.data.MoviesPreferences;
 import com.icodehigh.popularmovies.features.movies.detail.MovieDetailActivity;
 import com.icodehigh.popularmovies.model.Movie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.icodehigh.popularmovies.data.FavoriteMovieContract.FavoriteMovieEntry;
+
 public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPresenter> implements
         MoviesFeedView,
         MoviesAdapter.MoviesAdapterOnClickHandler,
         AdapterView.OnItemSelectedListener,
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     /*
      * how many columns will have the grid
@@ -41,6 +52,14 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
      * how many items can we have without loading from the api
      */
     private static final int VISIBLE_THRESHOLD = 10;
+
+    /*
+     * This ID will be used to identify the Loader responsible for loading favorites movies.
+     * Please note that 77 was chosen arbitrarily. You can use whatever number you like, so long as
+     * it is unique and consistent.
+     */
+    private static final int ID_FAV_MOVIES_LOADER = 77;
+    private static final String TAG = "MoviesFeedActivity";
 
     @BindView(R.id.root_view)
     View rootView;
@@ -96,14 +115,22 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
      */
     private boolean isLoadingRV;
     /*
-     * Has the API returned a page with no movies meaning that it has no more movies
-     * to offer to show
+     * Has the presenter returned a page with no movies or last movies meaning that it
+     * has no more movies to offer to show
      */
-    private boolean isApiInLastPage;
+    private boolean isLastPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        /*
+         * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
+         * created and (if the activity/fragment is currently started) starts the loader. Otherwise
+         * the last created loader is re-used.
+         */
+        getSupportLoaderManager().initLoader(ID_FAV_MOVIES_LOADER, null, this);
+
         setContentView(R.layout.activity_movies_feed);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
@@ -237,7 +264,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
                     super.onScrolled(recyclerView, dx, dy);
                     totalItemCount = gridLayoutManager.getItemCount();
                     lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition();
-                    if ((!isLoadingRV && !isApiInLastPage && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD))) {
+                    if ((!isLoadingRV && !isLastPage && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD))) {
                         moviesRv.post(new Runnable() {
                             @Override
                             public void run() {
@@ -255,8 +282,8 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
     }
 
     @Override
-    public void onApiLastPage() {
-        isApiInLastPage = true;
+    public void onLastPage() {
+        isLastPage = true;
     }
 
     @Override
@@ -277,10 +304,66 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
         startActivity(intent);
     }
 
-    private void refreshView() {
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, @Nullable Bundle args) {
+
+        switch (loaderId) {
+
+            case ID_FAV_MOVIES_LOADER:
+                /* URI for all rows of favorites movies data */
+                Uri uri = FavoriteMovieContract.FavoriteMovieEntry.CONTENT_URI;
+                /* Sort order: Ascending by name */
+                String sortOrder = FavoriteMovieContract.FavoriteMovieEntry.COLUMN_MOVIE_NAME + " ASC";
+
+                return new CursorLoader(this,
+                        uri,
+                        null,
+                        null,
+                        null,
+                        sortOrder);
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + loaderId);
+        }
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        ArrayList<Movie> moviesFavList = new ArrayList<>();
+        if (data.moveToFirst()) {
+            do {
+                Movie movie = new Movie();
+                movie.setId(data.getInt(data.getColumnIndex(FavoriteMovieEntry.COLUMN_MOVIE_ID)));
+                movie.setTitle(data.getString(data.getColumnIndex(FavoriteMovieEntry.COLUMN_MOVIE_NAME)));
+                movie.setPosterPath(data.getString(data.getColumnIndex(FavoriteMovieEntry.COLUMN_POSTER_PATH)));
+                movie.setReleaseDate(data.getString(data.getColumnIndex(FavoriteMovieEntry.COLUMN_RELEASE_DATE)));
+                movie.setVoteAverage(data.getDouble(data.getColumnIndex(FavoriteMovieEntry.COLUMN_VOTE_AVERAGE)));
+                movie.setOverview(data.getString(data.getColumnIndex(FavoriteMovieEntry.COLUMN_OVERVIEW)));
+                moviesFavList.add(movie);
+            } while (data.moveToNext());
+        }
+        presenter.setMoviesFavList(moviesFavList);
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+
+    }
+
+    @Override
+    public void resetLoader() {
+        getSupportLoaderManager().restartLoader(ID_FAV_MOVIES_LOADER, null, this);
+    }
+
+    @Override
+    public void clearAdapter() {
         if (moviesAdapter != null) {
             moviesAdapter.clear();
         }
+    }
+
+    private void refreshView() {
+        clearAdapter();
         presenter.resetPresenter(moviesListModePreference);
     }
 
