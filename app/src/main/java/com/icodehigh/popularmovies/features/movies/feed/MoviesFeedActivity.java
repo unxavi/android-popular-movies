@@ -364,6 +364,7 @@ public class MoviesFeedActivity extends MvpActivity<MoviesFeedView, MoviesFeedPr
 
     private void refreshView() {
         clearAdapter();
+        isLastPage = false;
         presenter.resetPresenter(moviesListModePreference);
     }
 
