@@ -30,6 +30,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.icodehigh.popularmovies.features.movies.feed.MoviesFeedActivity" />
         </activity>
+
+        <!-- Our ContentProvider -->
+        <provider
+            android:name=".data.MoviesContentProvider"
+            android:authorities="@string/content_authority"
+            android:exported="false"/>
+
+
     </application>
 
 </manifest>

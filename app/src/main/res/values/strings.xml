@@ -10,4 +10,8 @@
     <!-- Error messages-->
     <string name="detail_error_message">Movie data not available</string>
     <string name="rate_text">%s/10</string>
+
+    <!--content provider-->
+    <string name="content_authority">com.icodehigh.popularmovies</string>
+
 </resources>
