@@ -44,7 +44,7 @@ public class FavoriteMovieContract {
     public static final class FavoriteMovieEntry implements BaseColumns {
 
         /* The base CONTENT_URI used to query the fav movies table from the content provider */
-        public static final Uri  CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
                 .appendPath(PATH_FAVORITE_MOVIES)
                 .build();
 
@@ -56,6 +56,18 @@ public class FavoriteMovieContract {
 
         /* Movie title as returned by API in English*/
         public static final String COLUMN_MOVIE_NAME = "movie_name";
+
+        /* Movie poster path */
+        public static final String COLUMN_POSTER_PATH = "poster_path";
+
+        /* Movie release date */
+        public static final String COLUMN_RELEASE_DATE = "release_date";
+
+        /* Movie vote average */
+        public static final String COLUMN_VOTE_AVERAGE = "vote_average";
+
+        /* Movie overview */
+        public static final String COLUMN_OVERVIEW = "overview";
 
     }
 }

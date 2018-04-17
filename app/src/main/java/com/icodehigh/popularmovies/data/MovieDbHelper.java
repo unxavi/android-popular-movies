@@ -9,14 +9,14 @@ import com.icodehigh.popularmovies.data.FavoriteMovieContract.FavoriteMovieEntry
 public class MovieDbHelper extends SQLiteOpenHelper {
 
     /*
-    * This is the name of our movies database
-    */
+     * This is the name of our movies database
+     */
     private static final String DATABASE_NAME = "movie.db";
 
     /*
-    * If you change the database schema, you must increment the database version or the onUpgrade
-    * method will not be called.
-    */
+     * If you change the database schema, you must increment the database version or the onUpgrade
+     * method will not be called.
+     */
     private static final int DATABASE_VERSION = 1;
 
 
@@ -26,7 +26,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-         /*
+        /*
          * This String contain a simple SQL statement that will create a table that will
          * save the user favorite movies
          */
@@ -34,21 +34,30 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
                 "CREATE TABLE " + FavoriteMovieEntry.TABLE_NAME + " (" +
 
-                /*
-                 * FavoriteMovieEntry implements the interface, "BaseColumns", which does have a field
-                 * named "_ID". We use that here to designate our table's primary key.
-                 */
+                        /*
+                         * FavoriteMovieEntry implements the interface, "BaseColumns", which does have a field
+                         * named "_ID". We use that here to designate our table's primary key.
+                         */
                         FavoriteMovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
                         FavoriteMovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
 
                         FavoriteMovieEntry.COLUMN_MOVIE_NAME + " TEXT NOT NULL, " +
-                /*
-                 * To ensure this table can only contain one movie entry per movie_id, we declare
-                 * the COLUMN_MOVIE_ID column to be unique. We also specify "ON CONFLICT REPLACE". This tells
-                 * SQLite that if we have a movie entry for a certain API ID and we attempt to
-                 * insert another movie entry with that API ID, we replace the old movie entry.
-                 */
+
+                        FavoriteMovieEntry.COLUMN_POSTER_PATH + " TEXT, " +
+
+                        FavoriteMovieEntry.COLUMN_RELEASE_DATE + " TEXT, " +
+
+                        FavoriteMovieEntry.COLUMN_VOTE_AVERAGE + " REAL, " +
+
+                        FavoriteMovieEntry.COLUMN_OVERVIEW + " TEXT, " +
+
+                        /*
+                         * To ensure this table can only contain one movie entry per movie_id, we declare
+                         * the COLUMN_MOVIE_ID column to be unique. We also specify "ON CONFLICT REPLACE". This tells
+                         * SQLite that if we have a movie entry for a certain API ID and we attempt to
+                         * insert another movie entry with that API ID, we replace the old movie entry.
+                         */
                         " UNIQUE (" + FavoriteMovieEntry.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE);";
 
         /*

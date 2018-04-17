@@ -19,12 +19,12 @@
             style="@style/Base.TextAppearance.AppCompat.Display1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="32dp"
-            android:paddingBottom="32dp"
             android:background="@color/title_movie_background"
             android:gravity="center_vertical"
+            android:paddingBottom="32dp"
             android:paddingEnd="@dimen/vertical_space"
             android:paddingStart="@dimen/vertical_space"
+            android:paddingTop="32dp"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,6 +39,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/movie_poster_content_description"
             android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_foreground"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_tv" />
 
@@ -49,6 +50,7 @@
             android:layout_marginEnd="@dimen/vertical_space"
             android:layout_marginStart="@dimen/vertical_space"
             android:layout_marginTop="@dimen/horizontal_space"
+            android:text="asjdlsjaldjlasjldas"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/movie_poster_iv" />
 
@@ -58,6 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/vertical_space"
+            android:text="asljdlsajdsajl"
             app:layout_constraintStart_toEndOf="@+id/movie_poster_iv"
             app:layout_constraintTop_toTopOf="@+id/movie_poster_iv" />
 
@@ -68,8 +71,17 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/vertical_space"
             android:layout_marginTop="@dimen/horizontal_space"
+            android:text="asjdlsajljdasl"
             app:layout_constraintStart_toEndOf="@+id/movie_poster_iv"
             app:layout_constraintTop_toBottomOf="@+id/date_tv" />
+
+        <Button
+            android:id="@+id/fav_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add to fav"
+            app:layout_constraintStart_toStartOf="@+id/rate_tv"
+            app:layout_constraintTop_toBottomOf="@+id/rate_tv" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -1,6 +1,8 @@
 package com.icodehigh.popularmovies.features.movies.detail;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,11 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.icodehigh.popularmovies.R;
+import com.icodehigh.popularmovies.data.FavoriteMovieContract;
 import com.icodehigh.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -36,6 +40,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.rate_tv)
     TextView rateTv;
 
+    private Movie movie;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +60,12 @@ public class MovieDetailActivity extends AppCompatActivity {
                 intent.getExtras().getParcelable(Movie.class.getSimpleName()) == null) {
             closeOnError();
         } else {
-            Movie movie = intent.getExtras().getParcelable(Movie.class.getSimpleName());
-            populateView(movie);
+            movie = intent.getExtras().getParcelable(Movie.class.getSimpleName());
+            if (movie != null) {
+                populateView(movie);
+            } else {
+                closeOnError();
+            }
         }
     }
 
@@ -82,4 +92,18 @@ public class MovieDetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
+    @OnClick(R.id.fav_button)
+    public void onViewClicked() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_MOVIE_ID, movie.getId());
+        contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_MOVIE_NAME, movie.getTitle());
+        contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
+        contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
+        contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
+        contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_OVERVIEW, movie.getOverview());
+        Uri uri = getContentResolver().insert(FavoriteMovieContract.FavoriteMovieEntry.CONTENT_URI, contentValues);
+        if (uri != null) {
+            Toast.makeText(this, uri.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
 }

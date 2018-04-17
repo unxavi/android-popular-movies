@@ -118,6 +118,10 @@ public class Movie implements Parcelable {
         return releaseDate;
     }
 
+    public String getPosterPath() {
+        return posterPath;
+    }
+
     public String getCompletePosterPath() {
         if (TextUtils.isEmpty(posterPath)) {
             return null;
