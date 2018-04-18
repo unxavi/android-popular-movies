@@ -3,11 +3,16 @@ package com.icodehigh.popularmovies.features.movies.detail;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +36,16 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MovieDetailActivity extends
-        MvpActivity<MovieDetailView, MovieDetailPresenter> implements MovieDetailView, TrailerAdapter.TrailersAdapterOnClickHandler {
+        MvpActivity<MovieDetailView, MovieDetailPresenter> implements
+        MovieDetailView,
+        TrailerAdapter.TrailersAdapterOnClickHandler,
+        LoaderManager.LoaderCallbacks<Cursor> {
+
+    /*
+     * This ID will be used to identify the Loader responsible for loading one movie to check if
+     * it's available on the fav movies database
+     */
+    private static final int ID_FAV_MOVIE_LOADER = 66;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -65,6 +79,8 @@ public class MovieDetailActivity extends
 
     private Movie movie;
 
+    private boolean isFavorite;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +101,47 @@ public class MovieDetailActivity extends
         } else {
             movie = intent.getExtras().getParcelable(Movie.class.getSimpleName());
             if (movie != null) {
-                populateView(movie);
+                /* This connects our Activity into the loader lifecycle. */
+                getSupportLoaderManager().initLoader(ID_FAV_MOVIE_LOADER, null, this);
                 presenter.onViewAttached(movie.getId());
+                populateView(movie);
             } else {
                 closeOnError();
             }
         }
+    }
+
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, @Nullable Bundle args) {
+        switch (loaderId) {
+
+            case ID_FAV_MOVIE_LOADER:
+                /* URI for specific favorite movies data */
+                Uri uri = FavoriteMovieContract.FavoriteMovieEntry.buildFavoriteMovieUriWithId(movie.getId());
+                return new CursorLoader(this,
+                        uri,
+                        null,
+                        null,
+                        null,
+                        null);
+
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + loaderId);
+        }
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        isFavorite = data != null && data.moveToFirst();
+        renderTextForFavButton();
+
+    }
+
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+
     }
 
     private void populateView(Movie movie) {
@@ -118,16 +169,36 @@ public class MovieDetailActivity extends
 
     @OnClick(R.id.fav_button)
     public void onViewClicked() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_MOVIE_ID, movie.getId());
-        contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_MOVIE_NAME, movie.getTitle());
-        contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
-        contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
-        contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
-        contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_OVERVIEW, movie.getOverview());
-        Uri uri = getContentResolver().insert(FavoriteMovieContract.FavoriteMovieEntry.CONTENT_URI, contentValues);
-        if (uri != null) {
-            Toast.makeText(this, uri.toString(), Toast.LENGTH_LONG).show();
+        if (!isFavorite) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_MOVIE_ID, movie.getId());
+            contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_MOVIE_NAME, movie.getTitle());
+            contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
+            contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
+            contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
+            contentValues.put(FavoriteMovieContract.FavoriteMovieEntry.COLUMN_OVERVIEW, movie.getOverview());
+            Uri uri = getContentResolver().insert(FavoriteMovieContract.FavoriteMovieEntry.CONTENT_URI, contentValues);
+            if (uri != null) {
+                Toast.makeText(this, R.string.movie_add_favorite, Toast.LENGTH_LONG).show();
+                isFavorite = true;
+            }
+        } else {
+            /* URI for specific favorite movies data */
+            Uri uri = FavoriteMovieContract.FavoriteMovieEntry.buildFavoriteMovieUriWithId(movie.getId());
+            int delete = getContentResolver().delete(uri, null, null);
+            if (delete > 0) {
+                Toast.makeText(this, R.string.movie_deleted_from_fav, Toast.LENGTH_LONG).show();
+                isFavorite = false;
+            }
+        }
+        renderTextForFavButton();
+    }
+
+    private void renderTextForFavButton() {
+        if (isFavorite) {
+            favButton.setText(R.string.delete_from_favorite);
+        } else {
+            favButton.setText(R.string.add_to_favorite);
         }
     }
 
