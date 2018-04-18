@@ -15,5 +15,7 @@
     <string name="content_authority">com.icodehigh.popularmovies</string>
     <string name="trailers_label">Trailers:</string>
     <string name="reviews_label_tv">Reviews:</string>
+    <string name="play_icon_trailer_content_description">Play icon trailer</string>
+    <string name="trailer">Trailer</string>
 
 </resources>

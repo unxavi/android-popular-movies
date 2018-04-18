@@ -66,7 +66,7 @@ public interface ApiService {
     @NonNull
     @GET(MOVIE_VIDEOS_PATH)
     Call<VideoResponse> getMovieVideos(
-            @Path("id") String id,
+            @Path("id") int id,
             @Query(API_KEY_PARAM) String apiKey
     );
 
@@ -81,7 +81,7 @@ public interface ApiService {
     @NonNull
     @GET(MOVIE_REVIEWS_PATH)
     Call<ReviewResponse> getMovieReviews(
-            @Path("id") String id,
+            @Path("id") int id,
             @Query(API_KEY_PARAM) String apiKey
     );
 

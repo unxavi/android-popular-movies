@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,16 +18,17 @@ import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.icodehigh.popularmovies.R;
 import com.icodehigh.popularmovies.data.FavoriteMovieContract;
 import com.icodehigh.popularmovies.model.Movie;
+import com.icodehigh.popularmovies.model.ReviewResponse;
+import com.icodehigh.popularmovies.model.Video;
+import com.icodehigh.popularmovies.model.VideoResponse;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MovieDetailActivity extends
-        MvpActivity<MovieDetailView, MovieDetailPresenter> implements MovieDetailView {
+        MvpActivity<MovieDetailView, MovieDetailPresenter> implements MovieDetailView, TrailerAdapter.TrailersAdapterOnClickHandler {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -43,6 +47,15 @@ public class MovieDetailActivity extends
 
     @BindView(R.id.rate_tv)
     TextView rateTv;
+
+    @BindView(R.id.fav_button)
+    Button favButton;
+
+    @BindView(R.id.recyclerViewTrailers)
+    RecyclerView recyclerViewTrailers;
+
+    @BindView(R.id.recyclerViewReviews)
+    RecyclerView recyclerViewReviews;
 
     private Movie movie;
 
@@ -67,6 +80,7 @@ public class MovieDetailActivity extends
             movie = intent.getExtras().getParcelable(Movie.class.getSimpleName());
             if (movie != null) {
                 populateView(movie);
+                presenter.onViewAttached(movie.getId());
             } else {
                 closeOnError();
             }
@@ -119,21 +133,31 @@ public class MovieDetailActivity extends
 
     @Override
     public void showSoftInternetError() {
-
+        // TODO: 4/18/18
     }
 
     @Override
     public void showSoftServerError() {
+        // TODO: 4/18/18
+    }
+
+    @Override
+    public void setTrailersData(VideoResponse videoResponse) {
+        recyclerViewTrailers.setNestedScrollingEnabled(false);
+        TrailerAdapter trailerAdapter = new TrailerAdapter(this, videoResponse.getResults(), this);
+        recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewTrailers.setHasFixedSize(true);
+        recyclerViewTrailers.setAdapter(trailerAdapter);
 
     }
 
     @Override
-    public void setTrailersData(List<Movie> movies) {
-
+    public void setReviewsData(ReviewResponse reviewResponse) {
+        // TODO: 4/18/18
     }
 
     @Override
-    public void setReviewsData(List<Movie> movies) {
-
+    public void onTrailerClick(Video video) {
+        // TODO: 4/18/18  
     }
 }

@@ -1,9 +1,8 @@
 package com.icodehigh.popularmovies.features.movies.detail;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
-import com.icodehigh.popularmovies.model.Movie;
-
-import java.util.List;
+import com.icodehigh.popularmovies.model.ReviewResponse;
+import com.icodehigh.popularmovies.model.VideoResponse;
 
 /**
  * Interface to be implemented to show a Movies List from the API
@@ -21,19 +20,19 @@ public interface MovieDetailView extends MvpView {
     void showSoftServerError();
 
     /**
-     * Method call when the presenter returns a list of trailers
+     * Method call when the presenter returns a response for trailers
      *
-     * @param movies list to show on the activity
+     * @param videoResponse from API
      */
-    void setTrailersData(List<Movie> movies);
+    void setTrailersData(VideoResponse videoResponse);
 
 
     /**
-     * Method call when the presenter returns a list of reviews
+     * Method call when the presenter returns a response for reviews
      *
-     * @param movies list to show on the activity
+     * @param reviewResponse from API
      */
-    void setReviewsData(List<Movie> movies);
+    void setReviewsData(ReviewResponse reviewResponse);
 
 
 }
