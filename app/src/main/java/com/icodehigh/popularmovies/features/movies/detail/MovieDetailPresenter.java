@@ -81,10 +81,11 @@ class MovieDetailPresenter extends MvpBasePresenter<MovieDetailView> {
             public void onResponse(@NonNull Call<VideoResponse> call, @NonNull Response<VideoResponse> response) {
                 final VideoResponse body = response.body();
                 if (response.isSuccessful() && body != null) {
+                    videoResponse = body;
                     ifViewAttached(new ViewAction<MovieDetailView>() {
                         @Override
                         public void run(@NonNull MovieDetailView view) {
-                            view.setTrailersData(body);
+                            view.setTrailersData(videoResponse);
                         }
                     });
                 } else {
