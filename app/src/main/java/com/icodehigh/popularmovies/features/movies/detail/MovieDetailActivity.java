@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -57,6 +59,9 @@ public class MovieDetailActivity extends
 
     @BindView(R.id.recyclerViewReviews)
     RecyclerView recyclerViewReviews;
+
+    @BindView(R.id.root_view)
+    CoordinatorLayout rootView;
 
     private Movie movie;
 
@@ -134,12 +139,14 @@ public class MovieDetailActivity extends
 
     @Override
     public void showSoftInternetError() {
-        // TODO: 4/18/18
+        Snackbar snackbar = Snackbar.make(rootView, R.string.internet_error, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override
     public void showSoftServerError() {
-        // TODO: 4/18/18
+        Snackbar snackbar = Snackbar.make(rootView, R.string.server_error, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override
