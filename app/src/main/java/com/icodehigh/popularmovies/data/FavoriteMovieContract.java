@@ -69,5 +69,20 @@ public class FavoriteMovieContract {
         /* Movie overview */
         public static final String COLUMN_OVERVIEW = "overview";
 
+
+        /**
+         * Builds a URI that adds the id of the movie to the end of the fav movies content URI path.
+         * This is used to query details about a single fav movie entry by movie id.
+
+         *
+         * @param movieId Normalized date in milliseconds
+         * @return Uri to query details about a single weather entry
+         */
+        public static Uri buildFavoriteMovieUriWithId(int movieId) {
+            return CONTENT_URI.buildUpon()
+                    .appendPath(Integer.toString(movieId))
+                    .build();
+        }
+
     }
 }
