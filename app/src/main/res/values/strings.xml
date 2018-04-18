@@ -21,5 +21,7 @@
     <string name="add_to_favorite">Add to fav</string>
     <string name="movie_add_favorite">Movie added to favorites</string>
     <string name="movie_deleted_from_fav">Movie deleted from favorite</string>
+    <string name="send_to">Send to</string>
+    <string name="youtube_video_not_available">Youtube Video not available to share</string>
 
 </resources>

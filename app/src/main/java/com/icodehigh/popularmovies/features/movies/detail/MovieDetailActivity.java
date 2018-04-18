@@ -17,6 +17,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,6 +48,7 @@ public class MovieDetailActivity extends
      * it's available on the fav movies database
      */
     private static final int ID_FAV_MOVIE_LOADER = 66;
+    public static final String HTTP_WWW_YOUTUBE_COM_WATCH_V_S = "http://www.youtube.com/watch?v=%s";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -81,6 +84,8 @@ public class MovieDetailActivity extends
 
     private boolean isFavorite;
 
+    private String firstVideoYouTubeKey;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +114,35 @@ public class MovieDetailActivity extends
                 closeOnError();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate menu resource file.
+        getMenuInflater().inflate(R.menu.detail_movie_menu, menu);
+        // Return true to display menu
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (item.getItemId() == R.id.menu_item_share) {
+            if (!TextUtils.isEmpty(firstVideoYouTubeKey)) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, String.format(HTTP_WWW_YOUTUBE_COM_WATCH_V_S, firstVideoYouTubeKey));
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_to)));
+            } else {
+                Toast.makeText(this, R.string.youtube_video_not_available, Toast.LENGTH_SHORT).show();
+
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @NonNull
@@ -222,6 +256,10 @@ public class MovieDetailActivity extends
 
     @Override
     public void setTrailersData(VideoResponse videoResponse) {
+        if (videoResponse != null && videoResponse.getResults() != null && !videoResponse.getResults().isEmpty()) {
+            Video video = videoResponse.getResults().get(0);
+            firstVideoYouTubeKey = video.getKey();
+        }
         recyclerViewTrailers.setNestedScrollingEnabled(false);
         TrailerAdapter trailerAdapter =
                 new TrailerAdapter(this, videoResponse.getResults(), this);
@@ -253,7 +291,7 @@ public class MovieDetailActivity extends
             startActivity(youtubeIntent);
         } catch (ActivityNotFoundException ex) {
             Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(String.format("http://www.youtube.com/watch?v=%s", videoId)));
+                    Uri.parse(String.format(HTTP_WWW_YOUTUBE_COM_WATCH_V_S, videoId)));
             startActivity(intent);
         }
     }
