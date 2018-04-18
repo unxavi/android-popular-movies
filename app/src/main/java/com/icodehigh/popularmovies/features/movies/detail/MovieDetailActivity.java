@@ -162,7 +162,11 @@ public class MovieDetailActivity extends
 
     @Override
     public void setReviewsData(ReviewResponse reviewResponse) {
-        // TODO: 4/18/18
+        recyclerViewReviews.setNestedScrollingEnabled(false);
+        ReviewAdapter reviewAdapter = new ReviewAdapter(this, reviewResponse.getResults());
+        recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewReviews.setHasFixedSize(true);
+        recyclerViewReviews.setAdapter(reviewAdapter);
     }
 
     @Override
