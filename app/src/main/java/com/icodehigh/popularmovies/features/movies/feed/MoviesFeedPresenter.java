@@ -38,6 +38,11 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
     private List<Movie> moviesList = new ArrayList<>();
 
     /*
+     * Movie list fetched from the DB
+     */
+    private List<Movie> moviesFavList = new ArrayList<>();
+
+    /*
      * API Call to enqueue on Retrofit
      */
     private Call<MovieResponse> popularMoviesCall;
@@ -61,10 +66,19 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
      * @param movieListMode {@link MoviesPreferences.MoviesListMode} to load from API
      */
     void resetPresenter(@MoviesPreferences.MoviesListMode int movieListMode) {
+        this.moviesListMode = movieListMode;
         this.moviesList.clear();
         this.page = ApiService.FIRST_PAGE_API;
-        this.moviesListMode = movieListMode;
-        getMovies();
+        if (moviesListMode == MoviesPreferences.POPULAR_MOVIES_LIST || moviesListMode == MoviesPreferences.TOP_RATED_MOVIES_LIST) {
+            getMovies();
+        } else if (moviesListMode == MoviesPreferences.FAVORITES_MOVIES_LIST) {
+            ifViewAttached(new ViewAction<MoviesFeedView>() {
+                @Override
+                public void run(@NonNull MoviesFeedView view) {
+                    view.resetLoader();
+                }
+            });
+        }
     }
 
     /**
@@ -72,79 +86,111 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
      * serve it to the view without making a network call
      */
     void onViewAttached(@MoviesPreferences.MoviesListMode int movieListMode) {
-        if (moviesList == null || moviesList.isEmpty()) {
-            this.page = ApiService.FIRST_PAGE_API;
-            this.moviesListMode = movieListMode;
-            this.service = ServiceGenerator.createService(ApiService.class);
-            getMovies();
-        } else {
-            ifViewAttached(new ViewAction<MoviesFeedView>() {
-                @Override
-                public void run(@NonNull MoviesFeedView view) {
-                    view.setMovieData(moviesList);
-                }
-            });
+        this.moviesListMode = movieListMode;
+        this.service = ServiceGenerator.createService(ApiService.class);
+        if (moviesListMode == MoviesPreferences.POPULAR_MOVIES_LIST || moviesListMode == MoviesPreferences.TOP_RATED_MOVIES_LIST) {
+            if (moviesList == null || moviesList.isEmpty()) {
+                this.page = ApiService.FIRST_PAGE_API;
+                getMovies();
+            } else {
+                ifViewAttached(new ViewAction<MoviesFeedView>() {
+                    @Override
+                    public void run(@NonNull MoviesFeedView view) {
+                        view.setMovieData(moviesList);
+                    }
+                });
+            }
         }
     }
 
+    /**
+     * Set the favorites movies from the db and if selected in the view mode show them
+     *
+     * @param moviesFavList array list
+     */
+    public void setMoviesFavList(final List<Movie> moviesFavList) {
+        this.moviesFavList = moviesFavList;
+        if (moviesListMode == MoviesPreferences.FAVORITES_MOVIES_LIST) {
+            showFavMoviesList();
+        }
+    }
+
+    private void showFavMoviesList() {
+        ifViewAttached(new ViewAction<MoviesFeedView>() {
+            @Override
+            public void run(@NonNull MoviesFeedView view) {
+                view.clearAdapter();
+                view.isPresenterLoadingData(false);
+                if (moviesFavList.isEmpty()) {
+                    view.showEmptyState();
+                } else {
+                    view.setMovieData(new ArrayList<>(moviesFavList));
+                }
+                view.onLastPage();
+            }
+        });
+    }
 
     /**
      * Get movies from API and return them to the view if any, otherwise return the corresponding
      * error to show the user what has happened.
      */
     void getMovies() {
-        // Show to the user that the movies are being loaded
-        if (page == 1) {
-            ifViewAttached(new ViewAction<MoviesFeedView>() {
-                @Override
-                public void run(@NonNull MoviesFeedView view) {
-                    view.showLoading();
-                }
-            });
-        }
-        // Create the ApiService object and enqueue the call
-        setApiCallForMovieList();
-        if (popularMoviesCall != null) {
-            // Inform the view that the presenter is loading data
-            ifViewAttached(new ViewAction<MoviesFeedView>() {
-                @Override
-                public void run(@NonNull MoviesFeedView view) {
-                    view.isPresenterLoadingData(true);
-                }
-            });
-            popularMoviesCall.enqueue(new Callback<MovieResponse>() {
-                @Override
-                public void onResponse(
-                        @NonNull Call<MovieResponse> call,
-                        @NonNull Response<MovieResponse> response) {
-                    MovieResponse movieResponse = response.body();
-                    if (response.isSuccessful() && movieResponse != null) {
-                        // if the response is successful and the call
-                        // contains data, show it to the user
-                        onResponseSuccess(movieResponse);
-                        // Increment the page number, so next time the next page is fetch
-                        page++;
-                    } else {
-                        // if the response is not successful show that there
-                        // was a server error to the user and should try it later
-                        showViewServerError();
+        // TODO: 4/17/18 getting movies should be handle by a repository, to get from the DB or API
+        if (moviesListMode == MoviesPreferences.POPULAR_MOVIES_LIST || moviesListMode == MoviesPreferences.TOP_RATED_MOVIES_LIST) {
+            // Show to the user that the movies are being loaded
+            if (page == 1) {
+                ifViewAttached(new ViewAction<MoviesFeedView>() {
+                    @Override
+                    public void run(@NonNull MoviesFeedView view) {
+                        view.showLoading();
                     }
-                }
+                });
+            }
+            // Create the ApiService object and enqueue the call
+            setApiCallForMovieList();
+            if (popularMoviesCall != null) {
+                // Inform the view that the presenter is loading data
+                ifViewAttached(new ViewAction<MoviesFeedView>() {
+                    @Override
+                    public void run(@NonNull MoviesFeedView view) {
+                        view.isPresenterLoadingData(true);
+                    }
+                });
+                popularMoviesCall.enqueue(new Callback<MovieResponse>() {
+                    @Override
+                    public void onResponse(
+                            @NonNull Call<MovieResponse> call,
+                            @NonNull Response<MovieResponse> response) {
+                        MovieResponse movieResponse = response.body();
+                        if (response.isSuccessful() && movieResponse != null) {
+                            // if the response is successful and the call
+                            // contains data, show it to the user
+                            onResponseSuccess(movieResponse);
+                            // Increment the page number, so next time the next page is fetch
+                            page++;
+                        } else {
+                            // if the response is not successful show that there
+                            // was a server error to the user and should try it later
+                            showViewServerError();
+                        }
+                    }
 
-                @Override
-                public void onFailure(@NonNull Call<MovieResponse> call, @NonNull final Throwable t) {
-                    // if the response has a failure could be for many reasons, could be the lack
-                    // of connection and might need to retry later or it could fail due to some
-                    // mismatch of the response and Java models
-                    if (t instanceof IOException) {
-                        showViewInternetError();
-                    } else {
-                        // mismatch of the response and Java models probably
-                        showViewServerError();
-                        Log.e(TAG, "onFailure: ", t);
+                    @Override
+                    public void onFailure(@NonNull Call<MovieResponse> call, @NonNull final Throwable t) {
+                        // if the response has a failure could be for many reasons, could be the lack
+                        // of connection and might need to retry later or it could fail due to some
+                        // mismatch of the response and Java models
+                        if (t instanceof IOException) {
+                            showViewInternetError();
+                        } else {
+                            // mismatch of the response and Java models probably
+                            showViewServerError();
+                            Log.e(TAG, "onFailure: ", t);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -180,7 +226,7 @@ class MoviesFeedPresenter extends MvpBasePresenter<MoviesFeedView> {
                     if (page == ApiService.FIRST_PAGE_API) {
                         view.showEmptyState();
                     } else {
-                        view.onApiLastPage();
+                        view.onLastPage();
                     }
                 }
             });

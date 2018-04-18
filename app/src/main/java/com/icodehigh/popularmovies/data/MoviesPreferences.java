@@ -29,6 +29,7 @@ public final class MoviesPreferences {
     // Declare the constants for movies list types
     public static final int POPULAR_MOVIES_LIST = 0;
     public static final int TOP_RATED_MOVIES_LIST = 1;
+    public static final int FAVORITES_MOVIES_LIST = 2;
 
     /*
      * key to store in share preferences what movie list to load
@@ -37,7 +38,7 @@ public final class MoviesPreferences {
 
     // Define the list of accepted constants and declare the MoviesListMode annotation
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({POPULAR_MOVIES_LIST, TOP_RATED_MOVIES_LIST})
+    @IntDef({POPULAR_MOVIES_LIST, TOP_RATED_MOVIES_LIST, FAVORITES_MOVIES_LIST})
     public @interface MoviesListMode {
     }
 

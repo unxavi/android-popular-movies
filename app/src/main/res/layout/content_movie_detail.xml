@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,12 +19,12 @@
             style="@style/Base.TextAppearance.AppCompat.Display1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="32dp"
-            android:paddingBottom="32dp"
             android:background="@color/title_movie_background"
             android:gravity="center_vertical"
+            android:paddingBottom="32dp"
             android:paddingEnd="@dimen/vertical_space"
             android:paddingStart="@dimen/vertical_space"
+            android:paddingTop="32dp"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,6 +71,53 @@
             app:layout_constraintStart_toEndOf="@+id/movie_poster_iv"
             app:layout_constraintTop_toBottomOf="@+id/date_tv" />
 
+        <Button
+            android:id="@+id/fav_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add to fav"
+            app:layout_constraintStart_toStartOf="@+id/rate_tv"
+            app:layout_constraintTop_toBottomOf="@+id/rate_tv" />
+
+        <TextView
+            android:id="@+id/trailers_label_tv"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/horizontal_space"
+            android:text="@string/trailers_label"
+            app:layout_constraintStart_toStartOf="@+id/synopsis_tv"
+            app:layout_constraintTop_toBottomOf="@+id/synopsis_tv" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewTrailers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/vertical_space"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/trailers_label_tv"
+            app:layout_constraintTop_toBottomOf="@+id/trailers_label_tv" />
+
+        <TextView
+            android:id="@+id/reviews_label_tv"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/horizontal_space"
+            android:text="@string/reviews_label_tv"
+            app:layout_constraintStart_toStartOf="@+id/recyclerViewTrailers"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerViewTrailers" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewReviews"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/vertical_space"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/reviews_label_tv"
+            app:layout_constraintTop_toBottomOf="@+id/reviews_label_tv" />
+
+
     </android.support.constraint.ConstraintLayout>
 
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

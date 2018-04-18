@@ -7,7 +7,7 @@ import com.icodehigh.popularmovies.model.Movie;
 import java.util.List;
 
 /**
- * Interface to be implemented to show a Movies List from the API
+ * Interface to be implemented to show a Movies List
  */
 interface MoviesFeedView extends MvpView {
 
@@ -51,7 +51,7 @@ interface MoviesFeedView extends MvpView {
     void showEmptyState();
 
     /**
-     * Method call when the API rerutn sucess and there is a list of movies to show
+     * Method call when the presenter returns a list of movies
      *
      * @param movies list to show on the activity
      */
@@ -59,10 +59,9 @@ interface MoviesFeedView extends MvpView {
 
 
     /**
-     * If the api does not respond with any movie on the list, it means it has reached the end
-     * of the paginations, inform the view that there is no need to request more pages
+     * Called by the presenter when it knows that it can't load more movies
      */
-    void onApiLastPage();
+    void onLastPage();
 
 
     /**
@@ -71,4 +70,14 @@ interface MoviesFeedView extends MvpView {
      * @param isLoading boolean if the presenter is loading or not
      */
     void isPresenterLoadingData(boolean isLoading);
+
+    /**
+     * Resets the loader to get again the data from the DB of favorites movies
+     */
+    void resetLoader();
+
+    /**
+     * Clear Recycler View adapter of any possible view
+     */
+    void clearAdapter();
 }

@@ -10,4 +10,18 @@
     <!-- Error messages-->
     <string name="detail_error_message">Movie data not available</string>
     <string name="rate_text">%s/10</string>
+
+    <!--content provider-->
+    <string name="content_authority">com.icodehigh.popularmovies</string>
+    <string name="trailers_label">Trailers:</string>
+    <string name="reviews_label_tv">Reviews:</string>
+    <string name="play_icon_trailer_content_description">Play icon trailer</string>
+    <string name="trailer">Trailer</string>
+    <string name="delete_from_favorite">Delete from fav</string>
+    <string name="add_to_favorite">Add to fav</string>
+    <string name="movie_add_favorite">Movie added to favorites</string>
+    <string name="movie_deleted_from_fav">Movie deleted from favorite</string>
+    <string name="send_to">Send to</string>
+    <string name="youtube_video_not_available">Youtube Video not available to share</string>
+
 </resources>
