@@ -108,7 +108,7 @@ public class MoviesContentProvider extends ContentProvider {
                         sortOrder);
                 break;
             default:
-                throw new UnsupportedOperationException("Unknow uri: " + uri);
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (getContext() != null) {
             cursor.setNotificationUri(getContext().getContentResolver(), uri);
