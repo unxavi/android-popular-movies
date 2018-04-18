@@ -43,6 +43,11 @@ class MovieDetailPresenter extends MvpBasePresenter<MovieDetailView> {
      */
     private Call<VideoResponse> videoResponseCall;
 
+    /*
+     * Network request to get reviews
+     */
+    private Call<ReviewResponse> reviewResponseCall;
+
 
     /**
      * Called when the view is ready, if the presenter has result from before, it will just
@@ -51,25 +56,14 @@ class MovieDetailPresenter extends MvpBasePresenter<MovieDetailView> {
     void onViewAttached(int movieId) {
         this.service = ServiceGenerator.createService(ApiService.class);
         if (videoResponse != null) {
-            ifViewAttached(new ViewAction<MovieDetailView>() {
-                @Override
-                public void run(@NonNull MovieDetailView view) {
-                    view.setTrailersData(videoResponse);
-                }
-            });
+            setTrailersDataOnView();
         } else {
             getTrailersFromAPI(movieId);
         }
-
         if (reviewResponse != null) {
-            ifViewAttached(new ViewAction<MovieDetailView>() {
-                @Override
-                public void run(@NonNull MovieDetailView view) {
-                    view.setReviewsData(reviewResponse);
-                }
-            });
+            setReviewDataOnView();
         } else {
-            // TODO: 4/18/18
+            getReviewsFromAPI(movieId);
         }
     }
 
@@ -82,12 +76,7 @@ class MovieDetailPresenter extends MvpBasePresenter<MovieDetailView> {
                 final VideoResponse body = response.body();
                 if (response.isSuccessful() && body != null) {
                     videoResponse = body;
-                    ifViewAttached(new ViewAction<MovieDetailView>() {
-                        @Override
-                        public void run(@NonNull MovieDetailView view) {
-                            view.setTrailersData(videoResponse);
-                        }
-                    });
+                    setTrailersDataOnView();
                 } else {
                     showServerError();
                 }
@@ -108,6 +97,55 @@ class MovieDetailPresenter extends MvpBasePresenter<MovieDetailView> {
             }
         });
 
+    }
+
+    private void getReviewsFromAPI(int movieId) {
+        reviewResponseCall =
+                service.getMovieReviews(movieId, BuildConfig.API_KEY_MOVIES);
+        reviewResponseCall.enqueue(new Callback<ReviewResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<ReviewResponse> call, @NonNull Response<ReviewResponse> response) {
+                ReviewResponse body = response.body();
+                if (response.isSuccessful() && body != null) {
+                    reviewResponse = body;
+                    setReviewDataOnView();
+                } else {
+                    showServerError();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ReviewResponse> call, @NonNull Throwable t) {
+                // if the response has a failure could be for many reasons, could be the lack
+                // of connection and might need to retry later or it could fail due to some
+                // mismatch of the response and Java models
+                if (t instanceof IOException) {
+                    showInternetError();
+                } else {
+                    // mismatch of the response and Java models probably
+                    showServerError();
+                    Log.e(TAG, "onFailure: ", t);
+                }
+            }
+        });
+    }
+
+    private void setTrailersDataOnView() {
+        ifViewAttached(new ViewAction<MovieDetailView>() {
+            @Override
+            public void run(@NonNull MovieDetailView view) {
+                view.setTrailersData(videoResponse);
+            }
+        });
+    }
+
+    private void setReviewDataOnView() {
+        ifViewAttached(new ViewAction<MovieDetailView>() {
+            @Override
+            public void run(@NonNull MovieDetailView view) {
+                view.setReviewsData(reviewResponse);
+            }
+        });
     }
 
     private void showServerError() {
@@ -138,5 +176,10 @@ class MovieDetailPresenter extends MvpBasePresenter<MovieDetailView> {
             videoResponseCall.cancel();
             videoResponseCall = null;
         }
+        if (reviewResponseCall != null) {
+            reviewResponseCall.cancel();
+            reviewResponseCall = null;
+        }
+
     }
 }
