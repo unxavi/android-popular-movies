@@ -16,5 +16,11 @@ public class Review {
     @SerializedName("url")
     private String url;
 
+    public String getAuthor() {
+        return author;
+    }
 
+    public String getContent() {
+        return content;
+    }
 }
