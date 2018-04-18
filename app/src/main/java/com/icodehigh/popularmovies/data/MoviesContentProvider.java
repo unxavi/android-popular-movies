@@ -190,7 +190,7 @@ public class MoviesContentProvider extends ContentProvider {
         }
 
 
-        return 0;
+        return numRowsDeleted;
     }
 
     /**
