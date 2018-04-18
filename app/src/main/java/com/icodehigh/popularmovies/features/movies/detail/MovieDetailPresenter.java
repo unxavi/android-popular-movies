@@ -18,7 +18,7 @@ import retrofit2.Response;
 
 
 /**
- * Interface to be implemented to show a Movies List from the API
+ * Interface to be implemented to show a Movies detail
  */
 class MovieDetailPresenter extends MvpBasePresenter<MovieDetailView> {
 
