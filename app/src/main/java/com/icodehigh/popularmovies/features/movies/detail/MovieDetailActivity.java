@@ -1,5 +1,6 @@
 package com.icodehigh.popularmovies.features.movies.detail;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
@@ -144,7 +145,8 @@ public class MovieDetailActivity extends
     @Override
     public void setTrailersData(VideoResponse videoResponse) {
         recyclerViewTrailers.setNestedScrollingEnabled(false);
-        TrailerAdapter trailerAdapter = new TrailerAdapter(this, videoResponse.getResults(), this);
+        TrailerAdapter trailerAdapter =
+                new TrailerAdapter(this, videoResponse.getResults(), this);
         recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTrailers.setHasFixedSize(true);
         recyclerViewTrailers.setAdapter(trailerAdapter);
@@ -158,6 +160,19 @@ public class MovieDetailActivity extends
 
     @Override
     public void onTrailerClick(Video video) {
-        // TODO: 4/18/18  
+        openYoutubeVideo(video.getKey());
+    }
+
+    @Override
+    public void openYoutubeVideo(String videoId) {
+        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse(String.format("vnd.youtube:%s", videoId)));
+        try {
+            startActivity(youtubeIntent);
+        } catch (ActivityNotFoundException ex) {
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(String.format("http://www.youtube.com/watch?v=%s", videoId)));
+            startActivity(intent);
+        }
     }
 }

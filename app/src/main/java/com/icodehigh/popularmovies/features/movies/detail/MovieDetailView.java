@@ -34,5 +34,11 @@ public interface MovieDetailView extends MvpView {
      */
     void setReviewsData(ReviewResponse reviewResponse);
 
+    /**
+     * Open a YouTube video from the activity
+     * @param key id of the YouTube video
+     */
+    void openYoutubeVideo(String key);
+
 
 }

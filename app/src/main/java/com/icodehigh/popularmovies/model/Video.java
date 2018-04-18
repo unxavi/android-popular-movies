@@ -28,4 +28,7 @@ public class Video {
     @SerializedName("type")
     private String type;
 
+    public String getKey() {
+        return key;
+    }
 }
